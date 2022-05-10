@@ -1,0 +1,18 @@
+version: '3.9'
+services:
+  GA:
+    image: stoplight/prism:4
+    command: 'mock -h 0.0.0.0 /tmp/GA/basic.oas3.yml'
+    volumes:
+      - ./Repositories/API.PHP/basic.oas3.yml:/tmp/GA/basic.oas3.yml:ro
+    ports:
+      # Serve the mocked API locally as available on port 8080
+      - '8093:4010'
+  Queue:
+    image: stoplight/prism:4
+    command: 'mock -h 0.0.0.0 /tmp/Queue/basic.oas3.yml'
+    volumes:
+      - ./Repositories/Queue.API.2/basic.oas3.yml:/tmp/Queue/basic.oas3.yml:ro
+    ports:
+      # Serve the mocked API locally as available on port 8080
+      - '8094:4010'

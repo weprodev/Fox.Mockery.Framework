@@ -1,0 +1,78 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Users API Lumen Mocker example
+  license:
+    name: MIT
+servers:
+  - url: http://localhost:8000
+paths:
+  /users:
+    get:
+      summary: List all users
+      operationId: listUsers
+      tags:
+        - users
+      responses:
+        200:
+          description: An paged array of users
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Users"
+  /users/{userId}:
+    get:
+      summary: Info for a specific user
+      operationId: showPersonById
+      tags:
+        - users
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id of the user to retrieve
+          schema:
+            type: string
+      responses:
+        200:
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+components:
+  schemas:
+    user:
+      required:
+        - id
+        - email
+        - name
+        - birthDate
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+          maxLength: 20
+        birthDate:
+          type: string
+          format: date
+        tags:
+          type: array
+          minItems: 1
+          maxItems: 3
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+              - manager
+              - admin
+              - programmer
+    Users:
+      type: array
+      items:
+        $ref: "#/components/schemas/User"
