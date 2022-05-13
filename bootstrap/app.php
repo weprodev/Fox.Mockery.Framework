@@ -59,7 +59,8 @@ $app->singleton(
 |
 */
 
-$app->configure('app');
+$app->configure('services');
+$app->configure('settings');
 
 /*
 |--------------------------------------------------------------------------
@@ -72,9 +73,9 @@ $app->configure('app');
 |
 */
 
-// $app->middleware([
-//     App\Http\Middleware\ExampleMiddleware::class
-// ]);
+ $app->middleware([
+    \App\Http\Middleware\ServiceCheckingMiddleware::class
+ ]);
 
 // $app->routeMiddleware([
 //     'auth' => App\Http\Middleware\Authenticate::class,
