@@ -8,4 +8,4 @@ services:
     volumes:
       - ./../../mocks/services/user/index.oas3.yml:/tmp/mocks/services/user/index.oas3.yml:ro
     ports:
-      - '8095:4010'
+      - '8094:4010'

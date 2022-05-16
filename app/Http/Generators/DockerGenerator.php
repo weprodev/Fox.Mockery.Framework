@@ -7,7 +7,7 @@ use Illuminate\Filesystem\Filesystem;
 class DockerGenerator extends Generator
 {
     protected string $stub = 'docker/service-docker-image';
-    private string $compose_stub = 'docker/service-docker-compose';
+    private string $composeStub = 'docker/service-docker-compose';
 
     public function __construct(array $options = [])
     {
@@ -70,17 +70,17 @@ class DockerGenerator extends Generator
 
     private function generateServiceContent(): string
     {
-        $serviceComposeStubPath = __DIR__ . '/Stubs/' . $this->compose_stub . '.stub';
+        $serviceComposeStubPath = __DIR__ . '/Stubs/' . $this->composeStub . '.stub';
         $availableServices = array_filter(config("services"), function ($service) {
             return $service['active'];
         });
         $contents = "";
 
-        foreach (array_keys($availableServices) as $service_name) {
+        foreach (array_keys($availableServices) as $serviceName) {
 
             $composeStubReplacement = [
-                'SERVICE_NAME' => $service_name,
-                'SERVICE_IMAGE_NAME' => ucfirst(strtolower($service_name)) . 'Image.yml',
+                'SERVICE_NAME' => $serviceName,
+                'SERVICE_IMAGE_NAME' => ucfirst(strtolower($serviceName)) . 'Image.yml',
             ];
             $contents .= (new Stub($serviceComposeStubPath, $composeStubReplacement))->render();
             $contents .= "\n";
