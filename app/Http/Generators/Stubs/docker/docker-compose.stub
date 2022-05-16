@@ -1,0 +1,4 @@
+version: '$DOCKER_VERSION$'
+services:
+
+$SERVICES$

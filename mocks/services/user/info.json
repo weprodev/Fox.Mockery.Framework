@@ -1,0 +1,18 @@
+{
+    "info": {
+        "description": "This is a sample mock server generation.",
+        "version": "1.0.0",
+        "title": "Mock Server Pet Store",
+        "termsOfService": "http://lumen-mocker:8000/terms/",
+        "contact": {
+            "email": "michael.andish@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "servers": [
+        "petstore.lumen-mocker:8000"
+    ]
+}

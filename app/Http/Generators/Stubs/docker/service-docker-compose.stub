@@ -1,0 +1,4 @@
+  $SERVICE_NAME$_mocker:
+    extends:
+      file: ./images/$SERVICE_IMAGE_NAME$
+      service: $SERVICE_NAME$
