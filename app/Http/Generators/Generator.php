@@ -17,7 +17,6 @@ abstract class Generator
         $this->options = $options;
     }
 
-    abstract public function getReplacements(): array;
     abstract public function getPathConfigNode();
     abstract function getPath(): string;
 
@@ -82,6 +81,10 @@ abstract class Generator
         return $this->filesystem->put($path, $this->getStub());
     }
 
+    public function getReplacements(): array
+    {
+        return [];
+    }
 
     public function getOptions(): array
     {

@@ -38,5 +38,29 @@ php artisan make:docker-image {SERVICE_NAME} {PORT}
  php artisan make:docker-image shop 8094
 ```
 
+Generate Open Api Specification according to the json files in the mock service directory
+```bash
+php artisan make:openapi {SERVICE_NAME}
+
+// Example
+ php artisan make:openapi user
+ 
+ // OUTPUT
+ AFTER RUNNING THIS COMMAND 2 FILES (index.json and index.yml) WILL CREATE IN THE SERVICE DIRECTORY!'
+```
+
+FILE CONVERTER COMMAND
+if you want to conver a file from json to yml or yml to json you can use below commands:
+```bash
+php artisan convert:files {FROM} {TO}
+
+// YML to JSON
+php artisan convert:files test.yml  test.json
+
+// JSON to YML
+php artisan convert:files test.json  test.yml
+```
+
+
 ## License
 The Lumen Mocker is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

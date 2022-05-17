@@ -30,22 +30,11 @@ class OpenApiSpecificationGenerator extends Generator
         return $this->getBasePath() . '/' . parent::getConfigGeneratorPath($this->getPathConfigNode(), true) . '/' . $this->getName() . '/index.oas3.yml';
     }
 
-    public function getReplacements(): array
+    public function run(): int
     {
         $getGeneratedJsonPath = $this->mergingJsonFiles();
-        return [
-            'CONTENT' => $this->convertJsonToYaml($getGeneratedJsonPath),
-        ];
-    }
-
-    private function getInfoData(): string
-    {
-        return $this->convertJsonToYaml('info');
-    }
-
-    private function getServersData(): string
-    {
-        return $this->convertJsonToYaml('servers');
+        $this->convertJsonToYaml($getGeneratedJsonPath);
+        return true;
     }
 
     public function getServiceName(): string
@@ -58,10 +47,11 @@ class OpenApiSpecificationGenerator extends Generator
         return $this->options['version'] ?? config('openapis.version', '3.1.0');
     }
 
-    private function convertJsonToYaml($jsonPath): string
+    private function convertJsonToYaml($jsonPath): void
     {
-        Artisan::call("convert:json2yml $jsonPath");
-        return Artisan::output();
+        $ymlDestinationPath = str_replace('.json', '.yml', $jsonPath);
+
+        Artisan::call("convert:files $jsonPath $ymlDestinationPath");
     }
 
     private function mergingJsonFiles(): string
@@ -97,7 +87,7 @@ class OpenApiSpecificationGenerator extends Generator
 
         $this->filesystem->put($jsonBaseDirectory . '/index.json', $jsonsContent);
 
-        return config('openapis.base_directory', 'mocks/services') . '/' . $this->getServiceName() . '/index.json';
+        return $jsonBaseDirectory . '/index.json';
     }
 
     private function mergingPathsJsonFiles($pathsDirectory): string
