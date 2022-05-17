@@ -61,6 +61,7 @@ $app->singleton(
 
 $app->configure('services');
 $app->configure('settings');
+$app->configure('openapis');
 
 /*
 |--------------------------------------------------------------------------

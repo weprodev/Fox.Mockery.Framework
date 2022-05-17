@@ -55,7 +55,7 @@ abstract class Generator
             $name = str_replace('/', '/', $this->name);
         }
 
-        return Str::studly(str_replace(' ', '/', ucwords(str_replace('/', ' ', $name))));
+        return strtolower(Str::studly(str_replace(' ', '/', ucwords(str_replace('/', ' ', $name)))));
     }
 
     public function setUp(): void
@@ -114,9 +114,15 @@ abstract class Generator
     public function getConfigGeneratorPath(string $entity, $directoryPath = false)
     {
         switch ($entity) {
+
             case ('docker' === $entity):
                 $path = config('settings.docker.image_path', 'deployment/images');
                 break;
+
+            case ('openapis' === $entity):
+                $path = config('openapis.base_directory', 'mocks/services');
+                break;
+
             default:
                 $path = '';
         }

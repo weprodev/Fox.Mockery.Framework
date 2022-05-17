@@ -1,0 +1,91 @@
+{
+    "/users": {
+        "get": {
+            "description": "Returns all users from the system that the user has access to",
+            "responses": {
+                "200": {
+                    "description": "A list of users.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/user"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "post": {
+            "description": "Create a user",
+            "responses": {
+                "204": {
+                    "description": "Create a new user",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "items": {
+                                    "$ref": "#/components/schemas/user"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "/users/{id}": {
+        "get": {
+            "description": "Returns users based on ID",
+            "summary": "Find users by ID",
+            "operationId": "getUsersById",
+            "responses": {
+                "200": {
+                    "description": "user response",
+                    "content": {
+                        "*/*": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    }
+                },
+                "default": {
+                    "description": "error payload",
+                    "content": {
+                        "text/html": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorModel"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "parameters": [
+            {
+                "name": "id",
+                "in": "path",
+                "description": "ID of user to use",
+                "required": true,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "style": "simple"
+            }
+        ]
+    }
+}
+
+
+
+

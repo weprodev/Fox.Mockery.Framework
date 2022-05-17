@@ -3,19 +3,19 @@
 namespace App\Http\Generators\Commands;
 
 use App\Http\Generators\Exceptions\FileAlreadyExistsException;
-use App\Http\Generators\DockerGenerator;
+use App\Http\Generators\OpenApiSpecificationGenerator;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
-class DockerImageCommand extends Command
+class OpenApiSpecificationCommand extends Command
 {
-    protected $name = 'make:docker-image';
+    protected $name = 'make:openapi';
 
-    protected $description = 'Create a new docker container container for service.';
+    protected $description = 'Create/re-generate an OPEN API SPECIFICATION for service.';
     protected ?Collection $generators = null;
-    protected string $type = "Docker Image";
+    protected string $type = "Open API Specification";
 
     public function handle(): void
     {
@@ -26,18 +26,19 @@ class DockerImageCommand extends Command
     public function fire(): void
     {
         try {
-            $dockerGenerator = new DockerGenerator([
+            $openApiSpecGenerator = new OpenApiSpecificationGenerator([
                 'service' => strtolower($this->argument('service')),
-                'port' => $this->argument('port'),
+                'version' => $this->argument('version'),
                 'force' => $this->option('force'),
             ]);
-            $isItNewDocker = !file_exists($dockerGenerator->getPath()) || $this->option('force');
-
-            $dockerGenerator->run();
-            if ($isItNewDocker && file_exists($dockerGenerator->getPath())) {
-                $this->info($this->type . ' created for '. $this->argument('service') .' successfully.');
-                $dockerGenerator->regeneratingDockerComposeFile();
-            }
+            dd($openApiSpecGenerator->run());
+//            $isItNewDocker = !file_exists($openApiSpecGenerator->getPath()) || $this->option('force');
+//
+//            $openApiSpecGenerator->run();
+//            if ($isItNewDocker && file_exists($openApiSpecGenerator->getPath())) {
+//                $this->info($this->type . ' created for '. $this->argument('service') .' successfully.');
+//                $openApiSpecGenerator->regeneratingDockerComposeFile();
+//            }
 
         } catch (FileAlreadyExistsException $e) {
             $this->error($this->type . ' already exists!');
@@ -55,11 +56,11 @@ class DockerImageCommand extends Command
                 null
             ],
             [
-                'port',
-                InputArgument::REQUIRED,
-                'The port of the service being generated.',
+                'version',
+                InputArgument::OPTIONAL,
+                'The version of the open api specification.',
                 null
-            ]
+            ],
         ];
     }
 

@@ -3,12 +3,8 @@
 namespace App\Http\Generators\Commands;
 
 use App\Http\Generators\Exceptions\FileAlreadyExistsException;
-use Illuminate\Support\Facades\File;
-use App\Http\Generators\DockerGenerator;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
 class DockerServiceGenerationCommand extends Command
 {
