@@ -2,15 +2,20 @@
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 
-/*
-|--------------------------------------------------------------------------
-| Application Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register all of the routes for an application.
-| It is a breeze. Simply tell Lumen the URIs it should respond to
-| and give it the Closure to call when that URI is requested.
-|
-*/
+$routeMethods = ['get', 'post', 'put', 'delete', 'patch', 'options', 'head'];
 
-$router->get('/', 'MocksController@index');
+foreach ($routeMethods as $method) {
+    $router->{$method}('/', 'Controller@default');
+}
+
+foreach (getAvailableServices() as $service_name => $service) {
+
+    $router->group(['prefix' => '/'], function () use ($service_name, $service, $router, $routeMethods) {
+
+        foreach ($routeMethods as $method) {
+            $router->{$method}('{service_name}', 'MocksController@index');
+            $router->{$method}('{service_name}/{any:.*}', 'MocksController@index');
+        }
+    });
+}
+
