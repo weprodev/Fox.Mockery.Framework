@@ -1,8 +1,8 @@
 {
     "info": {
-        "title": "Sample USER Service Management",
-        "summary": "A User Management Service",
-        "description": "This is a sample server for a user management.",
+        "title": "Sample Pet Store App",
+        "summary": "A pet store manager.",
+        "description": "This is a sample server for a pet store.",
         "termsOfService": "https://example.com/terms/",
         "contact": {
             "name": "API Support",
@@ -13,6 +13,6 @@
             "name": "Apache 2.0",
             "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
         },
-        "version": "1.0.1"
+        "version": "1.1.0"
     }
 }
