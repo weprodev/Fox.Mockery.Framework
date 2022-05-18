@@ -4,8 +4,8 @@ services:
   $SERVICE_NAME$:
     container_name: $SERVICE_NAME$_mocker
     image: stoplight/prism:4
-    command: 'mock -h 0.0.0.0 /tmp/$SERVICE_OPEN_API_SPECIFICATION_DIR$/$SERVICE_NAME$/index.oas3.yml'
+    command: 'mock -h 0.0.0.0 /tmp/$SERVICE_OPEN_API_SPECIFICATION_DIR$/$SERVICE_NAME$/index.yml'
     volumes:
-      - ./../../$SERVICE_OPEN_API_SPECIFICATION_DIR$/$SERVICE_NAME$/index.oas3.yml:/tmp/$SERVICE_OPEN_API_SPECIFICATION_DIR$/$SERVICE_NAME$/index.oas3.yml:ro
+      - ./../../$SERVICE_OPEN_API_SPECIFICATION_DIR$/$SERVICE_NAME$/index.yml:/tmp/$SERVICE_OPEN_API_SPECIFICATION_DIR$/$SERVICE_NAME$/index.yml:ro
     ports:
       - '$PORT$:4010'

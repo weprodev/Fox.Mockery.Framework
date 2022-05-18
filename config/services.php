@@ -10,7 +10,7 @@ return [
 
     'user' => [
         'prefix' => 'user',
-        'port' => '8094',
+        'port' => '9192',
         'active' => true
     ],
 
