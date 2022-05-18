@@ -68,15 +68,19 @@ paths:
                                     $ref: '#/components/schemas/user'
         post:
             description: 'Create a user'
+            requestBody:
+                description: 'Callback payload'
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/user'
             responses:
-                204:
-                    description: 'Create a new user'
+                200:
+                    description: 'User created successfully!'
                     content:
                         application/json:
                             schema:
-                                type: object
-                                items:
-                                    $ref: '#/components/schemas/user'
+                                $ref: '#/components/schemas/user'
     '/users/{id}':
         get:
             description: 'Returns users based on ID'
@@ -109,6 +113,14 @@ paths:
                         type: string
                 style: simple
 components:
+    Category:
+        type: object
+        properties:
+            id:
+                type: integer
+                format: int64
+            name:
+                type: string
     schemas:
         order:
             type: object
@@ -198,8 +210,6 @@ components:
                     type: integer
                     format: int32
                     description: 'User Status'
-            xml:
-                name: User
         tag:
             type: object
             properties:

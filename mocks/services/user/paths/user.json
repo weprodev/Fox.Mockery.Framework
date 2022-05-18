@@ -20,16 +20,23 @@
         },
         "post": {
             "description": "Create a user",
+            "requestBody": {
+                "description": "Callback payload",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/user"
+                        }
+                    }
+                }
+            },
             "responses": {
-                "204": {
-                    "description": "Create a new user",
+                "200": {
+                    "description": "User created successfully!",
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "items": {
-                                    "$ref": "#/components/schemas/user"
-                                }
+                                "$ref": "#/components/schemas/user"
                             }
                         }
                     }
