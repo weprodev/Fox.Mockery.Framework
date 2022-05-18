@@ -2,41 +2,35 @@
 
 namespace App\Http\Controllers;
 
-
-use http\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
 
 class MocksController extends Controller
 {
     private string $requestUri;
-    private string $requestMethod;
     private string $serviceName;
-    private array $serviceConfig;
     private string $serviceUrl;
+    private \GuzzleHttp\Client $client;
 
     public function __construct()
     {
-        $this->requestMethod = ucfirst(strtolower(request()->method()));
         $this->serviceName = request('service_name');
+
+        $this->setServiceUrl();
+
+        $this->client = new \GuzzleHttp\Client(['base_uri' => $this->serviceUrl]);
 
         $this->redirectToHomeIfServiceIsNotValid();
 
-        $this->serviceConfig = getServiceConfig($this->serviceName);
-        $servicePort = $this->serviceConfig['port'];
-        $this->serviceUrl = "http://localhost:{$servicePort}";
-
         $this->checkingIsServiceDockerContainerIsAvailable();
 
-        $baseUrl = url('/') . "/{$this->serviceName}";
-        $this->requestUri = ltrim(substr(request()->getUri(), strlen($baseUrl)), '/');
+        $this->setRequestUri();
     }
 
     public function index(Request $request): JsonResponse
     {
-        $responseBody = $this->{"sendHttp{$this->requestMethod}Request"}($request);
+        $responseBody = $this->sendHttpRequest($request);
         return response()->json(json_decode($responseBody, true));
     }
 
@@ -55,7 +49,7 @@ class MocksController extends Controller
         } catch (\Exception $exception) {
             $response = [
                 'message' => "SERVICE << $this->serviceName >> IS NOT AVAILABLE!",
-                'service' => array_merge($this->serviceConfig, [
+                'service' => array_merge(getServiceConfig($this->serviceName), [
                     'url' => $this->serviceUrl
                 ]),
                 'details' => $exception->getMessage(),
@@ -64,11 +58,35 @@ class MocksController extends Controller
         }
     }
 
-    private function sendHttpGetRequest(Request $request): string
+    private function setServiceUrl(): void
     {
-        $response = Http::get("{$this->serviceUrl}/{$this->requestUri}");
-        return $response->body();
+        $serviceConfig = getServiceConfig($this->serviceName);
+        $servicePort = $serviceConfig['port'];
+        $this->serviceUrl = "http://localhost:{$servicePort}";
     }
 
+    private function setRequestUri(): void
+    {
+        $baseUrl = url('/') . "/{$this->serviceName}";
+        $this->requestUri = ltrim(substr(request()->getUri(), strlen($baseUrl)), '/');
+    }
+
+    private function sendHttpRequest(Request $request): string
+    {
+        $headers = array_merge($request->header(), [
+            'allow_redirects' => false,
+            'http_errors' => false
+        ]);
+
+        $newRequest = new \GuzzleHttp\Psr7\Request($request->method(), $this->requestUri, $headers, json_encode($request->all()));
+
+        try {
+            $response = $this->client->send($newRequest);
+        } catch (\Exception $e) {
+            return $e->getResponse()->getBody()->getContents();
+        }
+
+        return $response->getBody();
+    }
 
 }
