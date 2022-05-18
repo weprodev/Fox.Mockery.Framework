@@ -31,7 +31,7 @@ class MocksController extends Controller
     public function index(Request $request): JsonResponse
     {
         $responseBody = $this->sendHttpRequest($request);
-        return response()->json(json_decode($responseBody, true));
+        return response()->json(json_decode($responseBody['response']), $responseBody['status']);
     }
 
     private function redirectToHomeIfServiceIsNotValid(): void
@@ -71,7 +71,7 @@ class MocksController extends Controller
         $this->requestUri = ltrim(substr(request()->getUri(), strlen($baseUrl)), '/');
     }
 
-    private function sendHttpRequest(Request $request): string
+    private function sendHttpRequest(Request $request): array
     {
         $headers = array_merge($request->header(), [
             'allow_redirects' => false,
@@ -83,10 +83,16 @@ class MocksController extends Controller
         try {
             $response = $this->client->send($newRequest);
         } catch (\Exception $e) {
-            return $e->getResponse()->getBody()->getContents();
+            return [
+                'response' => $e->getResponse()->getBody()->getContents(),
+                'status' => $e->getCode()
+            ];
         }
 
-        return $response->getBody();
+        return [
+            'response' => $response->getBody(),
+            'status' => $response->getStatusCode()
+        ];
     }
 
 }
