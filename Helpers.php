@@ -8,7 +8,6 @@ if (!function_exists('getAvailableServices')) {
             return $service['active'];
         });
     }
-
 }
 
 if (!function_exists('getAllServices')) {
@@ -17,5 +16,16 @@ if (!function_exists('getAllServices')) {
     {
         return config("services");
     }
+}
 
+if (!function_exists('getServiceConfig')) {
+
+    function getServiceConfig(string $service_name)
+    {
+        $services = config("services");
+        if (!in_array($service_name, array_keys($services))) {
+            throw new \Exception("$service_name IS NOT EXIST!");
+        }
+        return $services[$service_name];
+    }
 }
