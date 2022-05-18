@@ -1,9 +1,9 @@
 {
     "openapi": "3.1.0",
     "info": {
-        "title": "Sample Pet Store App",
-        "summary": "A pet store manager.",
-        "description": "This is a sample server for a pet store.",
+        "title": "Sample USER Service Management",
+        "summary": "A User Management Service",
+        "description": "This is a sample server for a user management.",
         "termsOfService": "https:\/\/example.com\/terms\/",
         "contact": {
             "name": "API Support",
