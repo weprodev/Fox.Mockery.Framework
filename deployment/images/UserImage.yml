@@ -4,8 +4,8 @@ services:
   user:
     container_name: user_mocker
     image: stoplight/prism:4
-    command: 'mock -h 0.0.0.0 /tmp/mocks/services/user/index.oas3.yml'
+    command: 'mock -h 0.0.0.0 /tmp/mocks/services/user/index.yml'
     volumes:
-      - ./../../mocks/services/user/index.oas3.yml:/tmp/mocks/services/user/index.oas3.yml:ro
+      - ./../../mocks/services/user/index.yml:/tmp/mocks/services/user/index.yml:ro
     ports:
-      - '8094:4010'
+      - '9192:4010'
