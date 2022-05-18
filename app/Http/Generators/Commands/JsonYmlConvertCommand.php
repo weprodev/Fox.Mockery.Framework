@@ -3,8 +3,8 @@
 namespace App\Http\Generators\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Process\Process;
 use Composer\Json\JsonFile;
 use Symfony\Component\Yaml\Yaml;
 
@@ -21,6 +21,7 @@ class JsonYmlConvertCommand extends Command
 
     public function fire(): void
     {
+        $filesystem = new Filesystem;
         $from = $this->argument('from');
         $to = $this->argument('to');
         $fromFormat = pathinfo($from, PATHINFO_EXTENSION);
@@ -39,12 +40,12 @@ class JsonYmlConvertCommand extends Command
 
         if ('json' === $fromFormat) {
             $outputContent = $this->convertToYaml($sourceContent);
-            file_put_contents($to, $outputContent);
+            $filesystem->put($to, $outputContent);
             return;
         }
 
         $outputContent = $this->convertToJson($sourceContent);
-        file_put_contents($to, $outputContent);
+        $filesystem->put($to, $outputContent);
     }
 
     private function convertToJson($content): string
