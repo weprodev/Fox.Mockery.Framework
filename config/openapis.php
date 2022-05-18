@@ -7,13 +7,16 @@ return [
 
     'fields' => [
 
+        // openapis.fields.main
         'main' => [
-            'openapi' => 'required|string',
-            'info' => 'required|array',
-            'servers' => 'nullable|array',
-            'paths' => 'nullable|array',
+            'openapi' => 'required',
+            'info' => 'required',
+            'servers' => 'nullable',
+            'paths' => 'nullable',
+            'components' => 'nullable',
         ],
 
+        // openapis.fields.3_1_0
         '3_1_0' => [
 
             'openapi' => 'required|string',
@@ -61,6 +64,7 @@ return [
                 'patch' => 'nullable',
                 'trace' => 'nullable',
             ],
+
             'components' => [
                 'tags' => 'nullable',
                 'schemas' => 'nullable'

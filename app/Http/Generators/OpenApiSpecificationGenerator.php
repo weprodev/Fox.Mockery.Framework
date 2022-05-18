@@ -56,6 +56,7 @@ class OpenApiSpecificationGenerator extends Generator
 
     private function mergingJsonFiles(): string
     {
+        $requiredFields = $this->openApiSpecificationRequiredFields();
         $jsonBaseDirectory = $this->getBasePath() . '/' . config('openapis.base_directory') . '/' . $this->getServiceName();
         $versionBaseConfig = str_replace('.', '_', $this->version);
         $items = config("openapis.fields.{$versionBaseConfig}");
@@ -72,6 +73,12 @@ class OpenApiSpecificationGenerator extends Generator
             $filePath = $jsonBaseDirectory . '/' . $index . '.json';
             if (file_exists($filePath)) {
                 $jsonsContent = $this->mergingTwoJsonFile($jsonsContent, file_get_contents($filePath));
+            }
+
+            if (in_array($index, array_keys($requiredFields)) && !file_exists($filePath)){
+                $requiredFields = implode(',', array_keys($requiredFields));
+                dump("YOU DON'T HAVE REQUIRED JSON FILES IN YOUR DIRECTORY FOR GENERATING OPEN API SPECIFICATION!");
+                dd("REQUIRED JSON FILE FOR GENERATING OPEN API SPECIFICATION: $requiredFields");
             }
 
             if ($index == 'paths') {
@@ -92,6 +99,10 @@ class OpenApiSpecificationGenerator extends Generator
 
     private function mergingPathsJsonFiles($pathsDirectory): string
     {
+        if(!is_dir($pathsDirectory)){
+            return '{"paths": ""}';
+        }
+
         $jsonPathsFiles = scandir($pathsDirectory, SCANDIR_SORT_ASCENDING);
         $jsonPathsFiles = array_filter($jsonPathsFiles, function ($file_name) {
             return str_contains($file_name, '.json');
@@ -108,6 +119,10 @@ class OpenApiSpecificationGenerator extends Generator
 
     private function mergingComponentsJsonFiles($componentsDirectory): string
     {
+        if(!is_dir($componentsDirectory)){
+            return '{"components": ""}';
+        }
+
         $jsonComponentsFiles = scandir($componentsDirectory, SCANDIR_SORT_ASCENDING);
         $jsonComponentsFiles = array_filter($jsonComponentsFiles, function ($file_name) {
             return str_contains($file_name, '.json');
@@ -131,5 +146,13 @@ class OpenApiSpecificationGenerator extends Generator
             ),
             JSON_PRETTY_PRINT
         );
+    }
+
+    private function openApiSpecificationRequiredFields(): array
+    {
+        $fields = config("openapis.fields.main");
+        return array_filter($fields, function($field){
+            return str_contains($field, 'required');
+        });
     }
 }
