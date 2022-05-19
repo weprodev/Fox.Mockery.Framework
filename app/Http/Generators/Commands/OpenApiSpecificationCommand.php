@@ -2,10 +2,8 @@
 
 namespace App\Http\Generators\Commands;
 
-use App\Http\Generators\Exceptions\FileAlreadyExistsException;
 use App\Http\Generators\OpenApiSpecificationGenerator;
 use Illuminate\Console\Command;
-use Illuminate\Support\Collection;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -14,7 +12,6 @@ class OpenApiSpecificationCommand extends Command
     protected $name = 'make:openapi';
 
     protected $description = 'Create/re-generate an OPEN API SPECIFICATION for service.';
-    protected ?Collection $generators = null;
     protected string $type = "Open API Specification";
 
     public function handle(): void
@@ -26,24 +23,37 @@ class OpenApiSpecificationCommand extends Command
     public function fire(): void
     {
         try {
-            $openApiSpecGenerator = new OpenApiSpecificationGenerator([
-                'service' => strtolower($this->argument('service')),
-                'version' => $this->argument('version'),
-                'force' => $this->option('force'),
-            ]);
-            dd($openApiSpecGenerator->run());
-//            $isItNewDocker = !file_exists($openApiSpecGenerator->getPath()) || $this->option('force');
-//
-//            $openApiSpecGenerator->run();
-//            if ($isItNewDocker && file_exists($openApiSpecGenerator->getPath())) {
-//                $this->info($this->type . ' created for '. $this->argument('service') .' successfully.');
-//                $openApiSpecGenerator->regeneratingDockerComposeFile();
-//            }
 
-        } catch (FileAlreadyExistsException $e) {
-            $this->error($this->type . ' already exists!');
+            $serviceName = $this->argument('service');
+
+            if ($serviceName) {
+
+                $this->generateOpenApiSpec($serviceName);
+                $this->info($this->type . ' created for ' . $serviceName . ' successfully.');
+
+            } else {
+
+                foreach (getAvailableServices() as $serviceName => $service) {
+                    $this->generateOpenApiSpec($serviceName);
+                    $this->info($this->type . ' created for ' . $serviceName . ' successfully.');
+                }
+            }
+
+
+        } catch (\Exception $exception) {
+            $this->error($this->type . ': ' . $exception->getMessage());
             return;
         }
+    }
+
+    private function generateOpenApiSpec($service_name)
+    {
+        $openApiGenerator = new OpenApiSpecificationGenerator([
+            'service' => strtolower($service_name),
+            'version' => $this->argument('version'),
+            'force' => $this->option('force'),
+        ]);
+        $openApiGenerator->run();
     }
 
     public function getArguments(): array
@@ -51,7 +61,7 @@ class OpenApiSpecificationCommand extends Command
         return [
             [
                 'service',
-                InputArgument::REQUIRED,
+                InputArgument::OPTIONAL,
                 'The name of service being generated.',
                 null
             ],
