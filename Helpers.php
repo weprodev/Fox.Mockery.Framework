@@ -24,7 +24,8 @@ if (!function_exists('getServiceConfig')) {
     {
         $services = config("services");
         if (!in_array($service_name, array_keys($services))) {
-            throw new \Exception("$service_name IS NOT EXIST!");
+            header("Location: " . url('/'));
+            exit;
         }
         return $services[$service_name];
     }

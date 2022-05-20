@@ -21,8 +21,6 @@ class MocksController extends Controller
 
         $this->client = new \GuzzleHttp\Client(['base_uri' => $this->serviceUrl]);
 
-        $this->redirectToHomeIfServiceIsNotValid();
-
         $this->checkingIsServiceDockerContainerIsAvailable();
 
         $this->setRequestUri();
@@ -32,14 +30,6 @@ class MocksController extends Controller
     {
         $responseBody = $this->sendHttpRequest($request);
         return response()->json(json_decode($responseBody['response']), $responseBody['status']);
-    }
-
-    private function redirectToHomeIfServiceIsNotValid(): void
-    {
-        if (!in_array($this->serviceName, array_keys(getAvailableServices()))) {
-            header("Location: " . url('/'));
-            exit;
-        }
     }
 
     private function checkingIsServiceDockerContainerIsAvailable(): void
