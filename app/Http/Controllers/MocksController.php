@@ -68,7 +68,8 @@ class MocksController extends Controller
             'http_errors' => false
         ]);
 
-        $newRequest = new \GuzzleHttp\Psr7\Request($request->method(), $this->requestUri, $headers, json_encode($request->all()));
+        $requestBody = empty($request->all()) ? null : json_encode($request->all());
+        $newRequest = new \GuzzleHttp\Psr7\Request($request->method(), $this->requestUri, $headers, $requestBody);
 
         try {
             $response = $this->client->send($newRequest);

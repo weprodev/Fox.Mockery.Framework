@@ -134,18 +134,41 @@ class OpenApiSpecificationGenerator extends Generator
             $jsonComponentsContent = $this->mergingTwoJsonFile($jsonComponentsContent, file_get_contents($filePath));
         }
 
+        /// MERGING JSON SCHEMA FROM DIRECTORY
+        $schemaDirectory = $componentsDirectory . '/schemas';
+        if (is_dir($schemaDirectory)){
+            $jsonSchemaContent = $this->mergingSchemaFiles($schemaDirectory);
+            $jsonComponentsContent = $this->mergingTwoJsonFile($jsonComponentsContent, $jsonSchemaContent);
+        }
+
         return '{"components": ' . $jsonComponentsContent . '}';
+    }
+
+    private function mergingSchemaFiles($schemaDirectory): string
+    {
+        $jsonSchemaContent = json_encode([]);
+        if (is_dir($schemaDirectory)){
+            $jsonSchemaFiles = scandir($schemaDirectory, SCANDIR_SORT_ASCENDING);
+            $jsonSchemaFiles = array_filter($jsonSchemaFiles, function ($schema_file_name) {
+                return str_contains($schema_file_name, '.json');
+            });
+
+            foreach ($jsonSchemaFiles as $jsonSchemaFile) {
+                $schemaFilePath = $schemaDirectory . '/' . $jsonSchemaFile;
+                $jsonSchemaContent = $this->mergingTwoJsonFile($jsonSchemaContent, file_get_contents($schemaFilePath));
+            }
+        }
+
+        return '{"schemas": ' . $jsonSchemaContent . '}';
     }
 
     private function mergingTwoJsonFile($first_json_file, $second_json_file): string
     {
-        return json_encode(
-            array_merge(
-                json_decode($first_json_file, true),
-                json_decode($second_json_file, true),
-            ),
-            JSON_PRETTY_PRINT
-        );
+        $firstArrayContent = json_decode($first_json_file, true);
+        $secondArrayContent = json_decode($second_json_file, true);
+        $mergedContents = array_merge($firstArrayContent ?? [], $secondArrayContent ?? []);
+
+        return json_encode($mergedContents, JSON_PRETTY_PRINT);
     }
 
     private function openApiSpecificationRequiredFields(): array
