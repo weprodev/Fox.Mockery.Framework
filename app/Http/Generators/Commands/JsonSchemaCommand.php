@@ -2,18 +2,17 @@
 
 namespace App\Http\Generators\Commands;
 
-use App\Http\Generators\Exceptions\GenerateOpenApiSpecificationException;
-use App\Http\Generators\OpenApiSpecificationGenerator;
+use App\Http\Generators\JsonSchemaGenerator;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
-class OpenApiSpecificationCommand extends Command
+class JsonSchemaCommand extends Command
 {
-    protected $name = 'make:openapi';
+    protected $name = 'make:schema';
 
-    protected $description = 'Create/re-generate an OPEN API SPECIFICATION for service.';
-    protected string $type = "Open API Specification";
+    protected $description = 'Create/re-generate a JSON Schema for services.';
+    protected string $type = "JSON SCHEMA";
 
 
     public function handle(): void
@@ -30,18 +29,19 @@ class OpenApiSpecificationCommand extends Command
 
             if ($serviceName) {
 
-                $this->generateOpenApiSpec($serviceName);
+                $this->generateJsonSchema($serviceName);
                 $this->info($this->type . ' created for ' . $serviceName . ' successfully.');
+
             } else {
 
                 foreach (getAvailableServices() as $serviceName => $service) {
-                    $this->generateOpenApiSpec($serviceName);
-                    $this->info($this->type . ' CREATED FOR ' . $serviceName . ' SUCCESSFULLY!');
+                    $this->generateJsonSchema($serviceName);
+                    $this->info($this->type . ' CREATED FOR ' . $serviceName . ' SUCCESSFULLY.');
                 }
             }
 
 
-        } catch (GenerateOpenApiSpecificationException $exception) {
+        } catch (\Exception $exception) {
             $this->error($this->type . ': ' . $exception->getMessage());
             return;
         }
@@ -56,13 +56,7 @@ class OpenApiSpecificationCommand extends Command
                 InputArgument::OPTIONAL,
                 'The name of service being generated.',
                 null
-            ],
-            [
-                'version',
-                InputArgument::OPTIONAL,
-                'The version of the open api specification.',
-                null
-            ],
+            ]
         ];
     }
 
@@ -81,12 +75,11 @@ class OpenApiSpecificationCommand extends Command
     }
 
 
-    private function generateOpenApiSpec($service_name)
+    private function generateJsonSchema($service_name)
     {
 
-        $openApiGenerator = new OpenApiSpecificationGenerator([
+        $openApiGenerator = new JsonSchemaGenerator([
             'service' => strtolower($service_name),
-            'version' => $this->argument('version'),
             'force' => $this->option('force'),
         ]);
         $openApiGenerator->run();

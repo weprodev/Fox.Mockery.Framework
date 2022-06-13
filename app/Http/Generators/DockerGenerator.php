@@ -7,7 +7,9 @@ use Illuminate\Filesystem\Filesystem;
 class DockerGenerator extends Generator
 {
     protected string $stub = 'docker/service-docker-image';
+    protected string $name;
     private string $composeStub = 'docker/service-docker-compose';
+
 
     public function __construct(array $options = [])
     {
@@ -15,18 +17,20 @@ class DockerGenerator extends Generator
         $this->name = $this->getServiceName();
     }
 
+
     public function getPathConfigNode(): string
     {
         return 'docker';
     }
 
-    /**
-     * Get destination path for generated file.
-     */
-    public function getPath(): string
+
+    public function getDestinationPathGeneratedFile(): string
     {
-        return $this->getBasePath() . '/' . parent::getConfigGeneratorPath($this->getPathConfigNode(), true) . '/' . $this->getName() . 'Image.yml';
+        return $this->getBasePath() . '/' .
+            parent::getConfigGeneratorPath($this->getPathConfigNode(), true) . '/' .
+            $this->getName() . 'Image.yml';
     }
+
 
     public function getReplacements(): array
     {
@@ -37,22 +41,26 @@ class DockerGenerator extends Generator
         ];
     }
 
+
     public function getServiceName(): string
     {
         return $this->options['service'];
     }
+
 
     public function getOpenApiSpecificationDirectory(): string
     {
         return config('setting.base_dir', 'mocks/services');
     }
 
+
     public function getServicePort(): int
     {
         return $this->options['port'];
     }
 
-    public function regeneratingDockerComposeFile()
+
+    public function regeneratingDockerComposeFile(): bool|int
     {
         $serviceDockerContent = $this->generateServiceContent();
         $dockerComposeStub = __DIR__ . '/Stubs/docker/docker-compose.stub';
@@ -67,6 +75,7 @@ class DockerGenerator extends Generator
         $composeFileSystem = new Filesystem;
         return $composeFileSystem->put($dockerComposeDestinationPath, $dockerComposeContent);
     }
+
 
     private function generateServiceContent(): string
     {
@@ -88,4 +97,5 @@ class DockerGenerator extends Generator
 
         return $contents;
     }
+
 }

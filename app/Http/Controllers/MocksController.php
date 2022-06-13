@@ -2,87 +2,140 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
+use App\Http\Traits\OpisJsonSchema;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class MocksController extends Controller
 {
-    private string $requestUri;
-    private string $serviceName;
-    private string $serviceUrl;
-    private \GuzzleHttp\Client $client;
+    use OpisJsonSchema;
+
+    protected mixed $response;
+    protected ?string $schema;
+    protected string $responseType;
+    protected string|null $envelope;
+    protected string|null $overwrite;
 
     public function __construct()
     {
-        $this->serviceName = request('service_name');
+        $this->responseType = strtoupper(trim(request()->header('X-RESPONSE-TYPE') ?? "DATA"));
+        $this->envelope = strtolower(trim(request()->header('X-ENVELOPE-RESPONSE'))) ?? null;
+        $this->overwrite = request()->header('X-OVERWRITE-CONTENT') ?? null;
+        $this->requestedStatusCodeResponse = request()->header('X-STATUS-CODE') ?? null;
 
-        $this->setServiceUrl();
-
-        $this->client = new \GuzzleHttp\Client(['base_uri' => $this->serviceUrl]);
-
-        $this->checkingIsServiceDockerContainerIsAvailable();
-
-        $this->setRequestUri();
+        $this->schema = $this->getSchema();
+        $this->response = json_decode($this->getResponseContent(), true);
     }
 
-    public function index(Request $request): JsonResponse
+    public function index(): JsonResponse
     {
-        $responseBody = $this->sendHttpRequest($request);
-        return response()->json(json_decode($responseBody['response']), $responseBody['status']);
-    }
-
-    private function checkingIsServiceDockerContainerIsAvailable(): void
-    {
-        try {
-            Http::get($this->serviceUrl);
-        } catch (\Exception $exception) {
-            $response = [
-                'message' => "SERVICE << $this->serviceName >> IS NOT AVAILABLE!",
-                'service' => array_merge(getServiceConfig($this->serviceName), [
-                    'url' => $this->serviceUrl
-                ]),
-                'details' => $exception->getMessage(),
-            ];
-            dd($response);
-        }
-    }
-
-    private function setServiceUrl(): void
-    {
-        $serviceConfig = getServiceConfig($this->serviceName);
-        $servicePort = $serviceConfig['port'];
-        $this->serviceUrl = "http://localhost:{$servicePort}";
-    }
-
-    private function setRequestUri(): void
-    {
-        $baseUrl = url('/') . "/{$this->serviceName}";
-        $this->requestUri = ltrim(substr(request()->getUri(), strlen($baseUrl)), '/');
-    }
-
-    private function sendHttpRequest(Request $request): array
-    {
-        $headers = array_merge($request->header(), [
-            'allow_redirects' => false,
-            'http_errors' => false
-        ]);
-
-        $newRequest = new \GuzzleHttp\Psr7\Request($request->method(), $this->requestUri, $headers, json_encode($request->all()));
-
-        try {
-            $response = $this->client->send($newRequest);
-        } catch (\Exception $e) {
-            return [
-                'response' => $e->getResponse()->getBody()->getContents(),
-                'status' => $e->getCode()
-            ];
+        if ($this->responseStatusCode === Response::HTTP_NO_CONTENT) {
+            return jsonResponse([], $this->responseStatusCode);
         }
 
-        return [
-            'response' => $response->getBody(),
-            'status' => $response->getStatusCode()
+        if ($this->responseType == "EXAMPLE") {
+            return $this->returnExampleResponse();
+        }
+
+        return $this->returnDataResponse();
+    }
+
+    public function indexWithArguments(...$arguments): JsonResponse
+    {
+        return $this->index();
+    }
+
+
+    private function returnDataResponse(): JsonResponse
+    {
+        $data = [
+            'schema' => json_decode($this->schema, true),
+            'examples' => $this->response['examples'] ?? []
         ];
+
+        $data = $this->generateResponseData($data);
+
+        if ($this->envelope) {
+            return $this->returnResponseByEnvelope($data);
+        }
+
+        return jsonResponse($data, $this->responseStatusCode);
+    }
+
+    private function returnExampleResponse(): JsonResponse
+    {
+        $examples = $this->response['examples'] ?? [];
+
+        if (empty($examples)) {
+            return $this->returnDataResponse();
+        }
+
+        $example = end($examples);
+        if ($this->overwrite) {
+            $example = $this->overWriteExampleResponse($example);
+        }
+
+        if ($this->envelope) {
+            return $this->returnResponseByEnvelope($example);
+        }
+
+        return jsonResponse($example, $this->responseStatusCode);
+    }
+
+    private function returnResponseByEnvelope(array $responseBody): JsonResponse
+    {
+        if ($this->envelope != 'null') {
+            $responseBody = [$this->envelope => $responseBody];
+        }
+
+        return jsonResponse($responseBody, $this->responseStatusCode);
+    }
+
+    private function overWriteExampleResponse($example): array
+    {
+        if (isset($example[0])) {
+
+            foreach (request()->all() as $key => $value) {
+                $value = explode(',', request('primary_color'));
+
+                foreach ($value as $index => $replacement) {
+
+                    if (isset($example[$index]) && trim($replacement) != '') {
+                        $example[$index][$key] = trim($replacement);
+                    }
+                }
+
+            }
+
+            return $example;
+        }
+
+        return array_merge($example, request()->all());
+    }
+
+    private function generateResponseData(array $data): array
+    {
+
+        if (isset($this->response['response'])) {
+            return $this->response['response'];
+        }
+
+        if (config('settings.response.status')) {
+
+            $examples = $this->response['examples'] ?? [];
+
+            $response = match (strtoupper(config('settings.response.type'))) {
+                'EXAMPLE' => empty($examples) ? [] : end($examples),
+                'EXAMPLE_AND_OVERWRITE' => $this->overWriteExampleResponse((empty($examples) ? [] : end($examples))),
+                'SCHEMA' => json_decode($this->schema, true),
+                default => null,
+            };
+
+            if ($response) {
+                $data['response'] = $response;
+            }
+        }
+        return $data;
     }
 
 }

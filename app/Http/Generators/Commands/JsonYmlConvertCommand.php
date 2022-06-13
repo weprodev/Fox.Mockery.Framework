@@ -14,13 +14,16 @@ class JsonYmlConvertCommand extends Command
 
     protected $description = 'convert json content to yml.';
 
+
     public function handle(): void
     {
         $this->laravel->call([$this, 'fire'], func_get_args());
     }
 
+
     public function fire(): void
     {
+
         $filesystem = new Filesystem;
         $from = $this->argument('from');
         $to = $this->argument('to');
@@ -28,7 +31,10 @@ class JsonYmlConvertCommand extends Command
         $toFormat = pathinfo($to, PATHINFO_EXTENSION);
         $validFormats = ['json', 'yml'];
 
-        if ($fromFormat == $toFormat || !in_array(strtolower($fromFormat), $validFormats) || !in_array(strtolower($toFormat), $validFormats)){
+        if ($fromFormat == $toFormat ||
+            !in_array(strtolower($fromFormat), $validFormats) ||
+            !in_array(strtolower($toFormat), $validFormats)
+        ) {
             throw new \InvalidArgumentException('SOURCE FILE FORMAT / DESTINATION FILE FORMAT ARE NOT VALID!');
         }
 
@@ -48,17 +54,6 @@ class JsonYmlConvertCommand extends Command
         $filesystem->put($to, $outputContent);
     }
 
-    private function convertToJson($content): string
-    {
-        $data = Yaml::parse($content);
-        return JsonFile::encode($data, JSON_PRETTY_PRINT)."\n";
-    }
-
-    private function convertToYaml($content): string
-    {
-        $data = JsonFile::parseJson($content);
-        return Yaml::dump($data, 20);
-    }
 
     public function getArguments(): array
     {
@@ -83,4 +78,19 @@ class JsonYmlConvertCommand extends Command
     {
         return [];
     }
+
+
+    private function convertToJson($content): string
+    {
+        $data = Yaml::parse($content);
+        return JsonFile::encode($data, JSON_PRETTY_PRINT) . "\n";
+    }
+
+
+    private function convertToYaml($content): string
+    {
+        $data = JsonFile::parseJson($content);
+        return Yaml::dump($data, 20);
+    }
+
 }

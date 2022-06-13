@@ -2,31 +2,35 @@
 
 namespace App\Http\Middleware;
 
+use App\Exceptions\BaseMockDirectoryException;
 use Closure;
 use Illuminate\Support\Facades\Log;
 
 class ServiceCheckingMiddleware
 {
+
     public function handle($request, Closure $next)
     {
-        $this->isBaseMocksDirectoryExist();
+        $this->baseMocksDirectoryValidationCheck();
         $this->isServiceMocksDirectoryExists();
 
         return $next($request);
     }
 
-    private function isBaseMocksDirectoryExist()
+
+    private function baseMocksDirectoryValidationCheck(): void
     {
-        $baseMockDirectory = base_path(config('settings.base_dir'));
+        $baseMockDirectory = base_path(config('settings.base_directory'));
 
         if (!is_dir($baseMockDirectory)) {
-            throw new \Exception('There is no mocks directory! please after creating your mocks directory define it in the settings configuration.');
+            throw new BaseMockDirectoryException('There is no mocks directory! please after creating your mocks directory define it in the settings configuration.');
         }
     }
 
+
     private function isServiceMocksDirectoryExists(): void
     {
-        $baseMockDirectory = base_path(config('settings.base_dir'));
+        $baseMockDirectory = base_path(config('settings.base_directory'));
         $requiredFields = config('settings.required_service_fields');
         $availableServices = getAvailableServices();
 
@@ -41,7 +45,9 @@ class ServiceCheckingMiddleware
             if (!is_dir($baseMockDirectory . '/' . $service_name)) {
                 throw new \Exception("There is no mocks directory for $service_name, so you can de-activate the service in the service configuration file.");
             }
+
         }
 
     }
+
 }

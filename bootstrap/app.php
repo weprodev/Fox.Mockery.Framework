@@ -108,6 +108,9 @@ $app->configure('openapis');
 |
 */
 
+$serviceRoutesGeneration = new \App\Providers\ServiceRoutesGeneration();
+$serviceRoutesGeneration->generateRoutes();
+
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
 ], function ($router) {

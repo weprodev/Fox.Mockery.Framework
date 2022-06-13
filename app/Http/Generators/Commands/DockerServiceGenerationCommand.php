@@ -14,6 +14,7 @@ class DockerServiceGenerationCommand extends Command
     protected ?Collection $generators = null;
     protected string $type = "Docker Service Generation";
 
+
     public function handle(): void
     {
         $this->laravel->call([$this, 'fire'], func_get_args());
@@ -40,13 +41,16 @@ class DockerServiceGenerationCommand extends Command
 
     }
 
+
     public function getArguments(): array
     {
         return [];
     }
 
+
     public function getOptions(): array
     {
         return [];
     }
+
 }

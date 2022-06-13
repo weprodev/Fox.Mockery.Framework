@@ -2,13 +2,14 @@
 
 namespace App\Http\Generators;
 
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Artisan;
 
 class OpenApiSpecificationGenerator extends Generator
 {
     protected string $stub = 'openapis/openapi';
+    protected string $name;
     private string $version;
+
 
     public function __construct(array $options = [])
     {
@@ -17,18 +18,20 @@ class OpenApiSpecificationGenerator extends Generator
         $this->version = $this->getOpenApiSpecVersion();
     }
 
+
     public function getPathConfigNode(): string
     {
         return 'openapis';
     }
 
-    /**
-     * Get destination path for generated file.
-     */
-    public function getPath(): string
+
+    public function getDestinationPathGeneratedFile(): string
     {
-        return $this->getBasePath() . '/' . parent::getConfigGeneratorPath($this->getPathConfigNode(), true) . '/' . $this->getName() . '/index.oas3.yml';
+        return $this->getBasePath() . '/' .
+            parent::getConfigGeneratorPath($this->getPathConfigNode(), true) . '/' .
+            $this->getName() . '/index.oas3.yml';
     }
+
 
     public function run(): int
     {
@@ -37,122 +40,144 @@ class OpenApiSpecificationGenerator extends Generator
         return true;
     }
 
+
     public function getServiceName(): string
     {
         return strtolower($this->options['service']);
     }
+
 
     public function getOpenApiSpecVersion(): string
     {
         return $this->options['version'] ?? config('openapis.version', '3.1.0');
     }
 
+
     private function convertJsonToYaml($jsonPath): void
     {
-        $ymlDestinationPath = str_replace('.json', '.yml', $jsonPath);
-
+        $ymlDestinationPath = str_replace('_temp.json', '.yml', $jsonPath);
         Artisan::call("convert:files $jsonPath $ymlDestinationPath");
+        $this->filesystem->delete($jsonPath);
     }
+
 
     private function mergingJsonFiles(): string
     {
-        $requiredFields = $this->openApiSpecificationRequiredFields();
-        $jsonBaseDirectory = $this->getBasePath() . '/' . config('openapis.base_directory') . '/' . $this->getServiceName();
-        $versionBaseConfig = str_replace('.', '_', $this->version);
-        $items = config("openapis.fields.{$versionBaseConfig}");
+        $jsonBaseDirectory = $this->getBaseDirectoryOfJsonFiles();
+        $items = config('openapis.fields');
 
         if (!$items) {
-            dump("VERSION: $this->version, THERE IS NO CONFIG FOR THIS VERSION, TAKE A LOOK AT THE CONFIG FILES.");
-            dd('THE VERSION OF THE OPEN API SPECIFICATION IS WRONG! OR WE CAN\'T SUPPORT IT!');
+            dump("THERE IS NO CONFIG FOR ITEMS, TAKE A LOOK AT THE CONFIG FILES.");
+            dd('THE OPEN API SPECIFICATION CONFIG IS WRONG!');
         }
 
         $jsonsContent = json_encode([]);
 
         foreach ($items as $index => $value) {
 
-            $filePath = $jsonBaseDirectory . '/' . $index . '.json';
-            if (file_exists($filePath)) {
-                $jsonsContent = $this->mergingTwoJsonFile($jsonsContent, file_get_contents($filePath));
-            }
+            $dirPath = $jsonBaseDirectory . '/' . $index;
+            $filePath = $dirPath . '.json';
+            $this->checkRequiredFieldValidation($index, $filePath);
 
-            if (in_array($index, array_keys($requiredFields)) && !file_exists($filePath)){
-                $requiredFields = implode(',', array_keys($requiredFields));
-                dump("YOU DON'T HAVE REQUIRED JSON FILES IN YOUR DIRECTORY FOR GENERATING OPEN API SPECIFICATION!");
-                dd("REQUIRED JSON FILE FOR GENERATING OPEN API SPECIFICATION: $requiredFields");
+            if (file_exists($filePath)) {
+                $jsonsContent = mergingTwoJsonFile($jsonsContent, file_get_contents($filePath));
             }
 
             if ($index == 'paths') {
-                $pathsJsonContents = $this->mergingPathsJsonFiles($jsonBaseDirectory . '/' . $index);
-                $jsonsContent = $this->mergingTwoJsonFile($jsonsContent, $pathsJsonContents);
+                $pathsJsonContents = $this->mergingPathsJsonFiles($dirPath);
+                $jsonsContent = mergingTwoJsonFile($jsonsContent, $pathsJsonContents);
             }
 
             if ($index == 'components') {
-                $componentsJsonContent = $this->mergingComponentsJsonFiles($jsonBaseDirectory . '/' . $index);
-                $jsonsContent = $this->mergingTwoJsonFile($jsonsContent, $componentsJsonContent);
+                $componentsJsonContent = $this->mergingComponentsJsonFiles($dirPath);
+                $jsonsContent = mergingTwoJsonFile($jsonsContent, $componentsJsonContent);
             }
         }
 
-        $this->filesystem->put($jsonBaseDirectory . '/index.json', $jsonsContent);
+        $this->filesystem->put($jsonBaseDirectory . '/index_temp.json', $jsonsContent);
 
-        return $jsonBaseDirectory . '/index.json';
+        return $jsonBaseDirectory . '/index_temp.json';
     }
 
-    private function mergingPathsJsonFiles($pathsDirectory): string
+
+    private function checkRequiredFieldValidation(string $field, string $filePath): void
     {
-        if(!is_dir($pathsDirectory)){
+        $requiredFields = config('openapis.required_items');
+
+        if (in_array($field, $requiredFields) && (!file_exists($filePath) && is_dir($field))) {
+            dump('YOU DON\'T HAVE REQUIRED JSON FILES IN YOUR DIRECTORY FOR GENERATING OPEN API SPECIFICATION!');
+            dd('REQUIRED JSON FILE FOR GENERATING OPEN API SPECIFICATION:' . implode(',', $requiredFields));
+        }
+    }
+
+
+    private function mergingPathsJsonFiles(string $pathDirectory): string
+    {
+        if (!is_dir($pathDirectory)) {
             return '{"paths": ""}';
         }
 
-        $jsonPathsFiles = scandir($pathsDirectory, SCANDIR_SORT_ASCENDING);
-        $jsonPathsFiles = array_filter($jsonPathsFiles, function ($file_name) {
-            return str_contains($file_name, '.json');
-        });
-
-        $jsonPathsContent = json_encode([]);
-        foreach ($jsonPathsFiles as $jsonFile) {
-            $filePath = $pathsDirectory . '/' . $jsonFile;
-            $jsonPathsContent = $this->mergingTwoJsonFile($jsonPathsContent, file_get_contents($filePath));
-        }
+        $jsonPathsContent = $this->mergingJsonFilesInDirectory($pathDirectory);
 
         return '{"paths": ' . $jsonPathsContent . '}';
     }
 
-    private function mergingComponentsJsonFiles($componentsDirectory): string
+
+    private function mergingComponentsJsonFiles(string $componentsDirectory): string
     {
-        if(!is_dir($componentsDirectory)){
+        if (!is_dir($componentsDirectory)) {
             return '{"components": ""}';
         }
 
-        $jsonComponentsFiles = scandir($componentsDirectory, SCANDIR_SORT_ASCENDING);
-        $jsonComponentsFiles = array_filter($jsonComponentsFiles, function ($file_name) {
-            return str_contains($file_name, '.json');
-        });
+        $componentsArrayContent = [];
+        $this->crawlInnerDirectoriesAndMergingJsonFiles($componentsDirectory, $componentsArrayContent);
+        $componentsJsonContent = $this->mergingJsonFilesInDirectory($componentsDirectory);
+        $componentsJsonContent = mergingTwoJsonFile($componentsJsonContent, json_encode($componentsArrayContent));
 
-        $jsonComponentsContent = json_encode([]);
-        foreach ($jsonComponentsFiles as $jsonFile) {
-            $filePath = $componentsDirectory . '/' . $jsonFile;
-            $jsonComponentsContent = $this->mergingTwoJsonFile($jsonComponentsContent, file_get_contents($filePath));
+        return '{"components": ' . $componentsJsonContent . '}';
+    }
+
+
+    private function crawlInnerDirectoriesAndMergingJsonFiles(
+        string $pathDirectory,
+        array  &$resultContent,
+        string $parentKey = null): void
+    {
+        $innerDirectories = scanDirectoryAndReturnFiles($pathDirectory, 'all');
+
+        foreach ($innerDirectories as $item) {
+
+            $innerPathDirectory = $pathDirectory . '/' . $item;
+
+            if (is_dir($innerPathDirectory)) {
+                $this->crawlInnerDirectoriesAndMergingJsonFiles($innerPathDirectory, $resultContent, $item);
+            }
+
+            $allJsonFiles = scanDirectoryAndReturnFiles($innerPathDirectory, '.json');
+
+            foreach ($allJsonFiles as $jsonFile) {
+                $filePath = $innerPathDirectory . '/' . $jsonFile;
+                $fileName = $this->filesystem->name($filePath);
+                $jsonFileContent = $this->filesystem->get($filePath);
+
+                if ($parentKey) {
+                    $resultContent[$parentKey][$item][$fileName] = json_decode($jsonFileContent, true);
+                    continue;
+                }
+
+                $resultContent[$item][$fileName] = json_decode($jsonFileContent, true);
+            }
+
         }
 
-        return '{"components": ' . $jsonComponentsContent . '}';
     }
 
-    private function mergingTwoJsonFile($first_json_file, $second_json_file): string
+
+    private function getBaseDirectoryOfJsonFiles(): string
     {
-        return json_encode(
-            array_merge(
-                json_decode($first_json_file, true),
-                json_decode($second_json_file, true),
-            ),
-            JSON_PRETTY_PRINT
-        );
+        return $this->getBasePath() . '/' .
+            rtrim(config('settings.base_directory'), '/') . '/' .
+            $this->getServiceName();
     }
 
-    private function openApiSpecificationRequiredFields(): array
-    {
-        $fields = config("openapis.fields.main");
-        return array_filter($fields, function($field){
-            return str_contains($field, 'required');
-        });
-    }
 }

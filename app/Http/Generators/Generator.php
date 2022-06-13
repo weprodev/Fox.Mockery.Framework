@@ -10,27 +10,20 @@ abstract class Generator
     protected Filesystem $filesystem;
     protected array $options;
     protected string $stub;
+    protected string $baseDirectory;
+
 
     public function __construct(array $options = [])
     {
         $this->filesystem = new Filesystem;
         $this->options = $options;
+        $this->baseDirectory = rtrim(config('settings.base_directory', '/'), '/');
     }
 
     abstract public function getPathConfigNode();
-    abstract function getPath(): string;
 
-    public function getFilesystem(): Filesystem
-    {
-        return $this->filesystem;
-    }
+    abstract function getDestinationPathGeneratedFile(): string;
 
-    public function setFilesystem(Filesystem $filesystem): Generator
-    {
-        $this->filesystem = $filesystem;
-
-        return $this;
-    }
 
     public function getStub(): string
     {
@@ -39,23 +32,35 @@ abstract class Generator
         return (new Stub($stubPath, $this->getReplacements()))->render();
     }
 
+
     public function getBasePath(): string
     {
-        return base_path();
+        return rtrim(base_path(), '/');
     }
+
+
+    public function getBaseServicePath(): string
+    {
+        $baseServicePath = $this->getBasePath() . '/' . $this->baseDirectory . '/' . $this->getServiceName();
+        return rtrim($baseServicePath, '/');
+    }
+
 
     public function getName(): string
     {
-        $name = $this->name;
-        if (Str::contains($this->name, '\\')) {
-            $name = str_replace('\\', '/', $this->name);
-        }
-        if (Str::contains($this->name, '/')) {
-            $name = str_replace('/', '/', $this->name);
+        $name = strtolower($this->name);
+
+        if (Str::contains($name, '\\')) {
+            $name = str_replace('\\', '/', $name);
         }
 
-        return strtolower(Str::studly(str_replace(' ', '/', ucwords(str_replace('/', ' ', $name)))));
+        if (Str::contains($name, '/')) {
+            $name = str_replace('/', '/', $name);
+        }
+
+        return str_replace(' ', '/', ucwords(str_replace('/', ' ', $name)));
     }
+
 
     public function setUp(): void
     {
@@ -66,11 +71,11 @@ abstract class Generator
     public function run(): int
     {
         $this->setUp();
-        $path = $this->getPath();
+        $path = $this->getDestinationPathGeneratedFile();
 
         if ($this->filesystem->exists($path) && !$this->force) {
             dump("File already exist($path), if you want to overwrite it add -f option in your command!");
-            return true;
+            return false;
         }
 
         if (!$this->filesystem->isDirectory($dir = dirname($path))) {
@@ -81,10 +86,12 @@ abstract class Generator
         return $this->filesystem->put($path, $this->getStub());
     }
 
+
     public function getReplacements(): array
     {
         return [];
     }
+
 
     public function getOptions(): array
     {
@@ -114,21 +121,13 @@ abstract class Generator
     }
 
 
-    public function getConfigGeneratorPath(string $entity, $directoryPath = false)
+    public function getConfigGeneratorPath(string $entity, $directoryPath = false): string
     {
-        switch ($entity) {
-
-            case ('docker' === $entity):
-                $path = config('settings.docker.image_path', 'deployment/images');
-                break;
-
-            case ('openapis' === $entity):
-                $path = config('openapis.base_directory', 'mocks/services');
-                break;
-
-            default:
-                $path = '';
-        }
+        $path = match ($entity) {
+            'docker' => config('settings.docker.image_path', 'deployment/images'),
+            'openapis', 'json-schema' => config('settings.base_directory', 'mocks/services'),
+            default => '',
+        };
 
         if ($directoryPath) {
             $path = str_replace('\\', '/', $path);
@@ -136,7 +135,7 @@ abstract class Generator
             $path = str_replace('/', '\\', $path);
         }
 
-        return $path;
+        return rtrim($path, '/');
     }
 
 
@@ -147,5 +146,18 @@ abstract class Generator
         }
 
         return $this->option($key);
+    }
+
+    protected function mergingJsonFilesInDirectory(string $pathDirectory): string
+    {
+        $jsonPathsFiles = scanDirectoryAndReturnFiles($pathDirectory, '.json');
+
+        $jsonContent = json_encode([]);
+        foreach ($jsonPathsFiles as $jsonFile) {
+            $filePath = $pathDirectory . '/' . $jsonFile;
+            $jsonContent = mergingTwoJsonFile($jsonContent, file_get_contents($filePath));
+        }
+
+        return $jsonContent;
     }
 }

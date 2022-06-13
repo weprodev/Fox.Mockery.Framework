@@ -35,7 +35,7 @@ Generate docker image file for a specific service
 php artisan make:docker-image {SERVICE_NAME} {PORT}
 
 // example,
- php artisan make:docker-image shop 8094
+ php artisan make:docker-image shop
 ```
 
 Generate Open Api Specification according to the json files in the mock service directory

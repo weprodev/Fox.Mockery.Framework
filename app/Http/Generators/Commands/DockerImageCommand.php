@@ -17,6 +17,7 @@ class DockerImageCommand extends Command
     protected ?Collection $generators = null;
     protected string $type = "Docker Image";
 
+
     public function handle(): void
     {
         $this->laravel->call([$this, 'fire'], func_get_args());
@@ -31,10 +32,10 @@ class DockerImageCommand extends Command
                 'port' => $this->argument('port'),
                 'force' => $this->option('force'),
             ]);
-            $isItNewDocker = !file_exists($dockerGenerator->getPath()) || $this->option('force');
+            $isItNewDocker = !file_exists($dockerGenerator->getDestinationPathGeneratedFile()) || $this->option('force');
 
             $dockerGenerator->run();
-            if ($isItNewDocker && file_exists($dockerGenerator->getPath())) {
+            if ($isItNewDocker && file_exists($dockerGenerator->getDestinationPathGeneratedFile())) {
                 $this->info($this->type . ' created for '. $this->argument('service') .' successfully.');
                 $dockerGenerator->regeneratingDockerComposeFile();
             }
@@ -44,6 +45,7 @@ class DockerImageCommand extends Command
             return;
         }
     }
+
 
     public function getArguments(): array
     {
@@ -76,4 +78,5 @@ class DockerImageCommand extends Command
             ]
         ];
     }
+
 }

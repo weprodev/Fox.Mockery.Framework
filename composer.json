@@ -9,6 +9,7 @@
         "composer/composer": "^2.3",
         "guzzlehttp/guzzle": "^7.4",
         "laravel/lumen-framework": "^9.0",
+        "opis/json-schema": "^2.3",
         "symfony/yaml": "^6.0"
     },
     "require-dev": {

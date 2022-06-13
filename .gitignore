@@ -10,3 +10,4 @@ composer.lock
 storage/logs
 config
 mocks
+deployment/*
