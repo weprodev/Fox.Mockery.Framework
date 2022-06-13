@@ -1,6 +1,5 @@
 # Lumen Mocker
-Lumen mocker is a Mock Server which created base on [Lumen](https://lumen.laravel.com/docs/9.x) and 
-[Prism](https://github.com/stoplightio/prism) for creating Mock Server for different services.
+Lumen mocker is a Mock Server which created base on [Lumen](https://lumen.laravel.com/docs/9.x).
 With this service you can have Mock server and Contract Testing.
 
 # Introduction
@@ -24,7 +23,9 @@ In the config directory we have 2 configuration files:
    - general configuration like Base_directory, docker path,...
    - You can set the docker directory/ images and version of the docker file.
 
-# Docker Generation Commands 
+# Generation Commands 
+In this section you can use commands to generate files.
+## docker images
 
 Generate all of the docker images for available services:
 ```bash
@@ -38,6 +39,8 @@ php artisan make:docker-image {SERVICE_NAME} {PORT}
  php artisan make:docker-image shop
 ```
 
+## Open Api Specification
+
 Generate Open Api Specification according to the json files in the mock service directory
 ```bash
 php artisan make:openapi {SERVICE_NAME}
@@ -46,10 +49,25 @@ php artisan make:openapi {SERVICE_NAME}
  php artisan make:openapi user
  
  // OUTPUT
- AFTER RUNNING THIS COMMAND 2 FILES (index.json and index.yml) WILL CREATE IN THE SERVICE DIRECTORY!'
+ AFTER RUNNING THIS COMMAND index.yml FILE WILL CREATE IN THE SERVICE DIRECTORY!'
+```
+## Schema
+
+Generate Schema according to the json files in the mock service directory
+```bash
+php artisan make:schema  
+
+php artisan make:schema {SERVICE_NAME}
+
+// Example
+ php artisan make:schema user
+ 
+ // OUTPUT
+ AFTER RUNNING THIS COMMAND index.json FILE WILL CREATE IN THE SERVICE DIRECTORY!'
 ```
 
-FILE CONVERTER COMMAND
+
+## FILE CONVERTER COMMAND
 if you want to conver a file from json to yml or yml to json you can use below commands:
 ```bash
 php artisan convert:files {FROM} {TO}
