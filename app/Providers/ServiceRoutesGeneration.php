@@ -44,6 +44,10 @@ class ServiceRoutesGeneration
 
             foreach ($listOfArrayWithArguments as $path => $content) {
                 foreach ($content as $method => $pathContent) {
+                    if (!in_array($method, $this->routeMethods)){
+                        continue;
+                    }
+
                     $routePath = '{service_name}/' . ltrim($path, '/');
                     app()->router->{$method}($routePath, 'App\Http\Controllers\MocksController@indexWithArguments');
                 }
