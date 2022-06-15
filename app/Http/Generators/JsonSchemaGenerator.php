@@ -67,6 +67,19 @@ class JsonSchemaGenerator extends Generator
             return '{"paths": ""}';
         }
 
+        $jsonPathsFiles = scanDirectoryAndReturnFiles($pathDirectory);
+        $jsonPathsContent = $this->mergingAllPathsJsonFiles($pathDirectory);
+        foreach ($jsonPathsFiles as $path){
+            $jsonInnerPathContent =  $this->mergingAllPathsJsonFiles($pathDirectory . '/' . $path);
+            $jsonPathsContent = mergingTwoJsonFile($jsonPathsContent, $jsonInnerPathContent);
+        }
+
+        return '{"paths": ' . $jsonPathsContent . '}';
+    }
+
+
+    private function mergingAllPathsJsonFiles($pathDirectory): string
+    {
         $jsonPathsFiles = scanDirectoryAndReturnFiles($pathDirectory, '.json');
 
         $jsonPathsContent = json_encode([]);
@@ -76,7 +89,7 @@ class JsonSchemaGenerator extends Generator
             $jsonPathsContent = mergingTwoJsonFile($jsonPathsContent, json_encode($data));
         }
 
-        return '{"paths": ' . $jsonPathsContent . '}';
+        return $jsonPathsContent;
     }
 
 
