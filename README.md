@@ -7,9 +7,7 @@ In the config directory we have 2 configuration files:
 * services
   * for list of the services or products which you want to have mock server, like user, shop, ...
   * If you want to de-activate a service just change the `active` value to false
-* settings
-   - general configuration like Base_directory, docker path,...
-   - You can set the docker directory/ images and version of the docker file.
+* settings: general configuration like Base_directory, docker path,... 
 
 # Generation Commands 
 In this section you can use commands to generate files.
