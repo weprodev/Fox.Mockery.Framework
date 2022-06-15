@@ -232,6 +232,7 @@ trait OpisJsonSchema
             abort(Response::HTTP_INTERNAL_SERVER_ERROR, "THERE IS NO RESPONSE FOR {$status} STATUS CODE!");
         }
 
+        $status = $status ?? (request('X-STATUS-CODE') ?? Response::HTTP_OK);
         return match (true) {
             (Response::HTTP_OK == $status) => $this->checkToReturnHttpOkResponse(),
             (Response::HTTP_NOT_FOUND == $status) => $this->checkToReturnHttpNotFoundResponse(),
