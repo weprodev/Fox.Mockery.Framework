@@ -1,18 +1,6 @@
 # Lumen Mocker
 Lumen mocker is a Mock Server which created base on [Lumen](https://lumen.laravel.com/docs/9.x).
-With this service you can have Mock server and Contract Testing.
-
-# Introduction
-
-## OPEN API SPECIFICATION
-The [OpenAPI Specification (OAS)](https://www.openapis.org) defines a standard, language-agnostic interface to HTTP APIs which allows both humans 
-and computers to discover and understand the capabilities of the service without access to source code, documentation, 
-or through network traffic inspection. When properly defined, a consumer can understand and interact with the remote service 
-with a minimal amount of implementation logic.
-
-An OpenAPI definition can then be used by documentation generation tools to display the API, code generation tools to 
-generate servers and clients in various programming languages, testing tools, and many other use cases.
-
+With this service you can have Mock server for your contract testing.
 
 # Configuration
 In the config directory we have 2 configuration files:
@@ -25,37 +13,13 @@ In the config directory we have 2 configuration files:
 
 # Generation Commands 
 In this section you can use commands to generate files.
-## docker images
 
-Generate all of the docker images for available services:
-```bash
-php artisan make:docker
-```
-Generate docker image file for a specific service
-```bash
-php artisan make:docker-image {SERVICE_NAME} {PORT}
-
-// example,
- php artisan make:docker-image shop
-```
-
-## Open Api Specification
-
-Generate Open Api Specification according to the json files in the mock service directory
-```bash
-php artisan make:openapi {SERVICE_NAME}
-
-// Example
- php artisan make:openapi user
- 
- // OUTPUT
- AFTER RUNNING THIS COMMAND index.yml FILE WILL CREATE IN THE SERVICE DIRECTORY!'
-```
 ## Schema
 
 Generate Schema according to the json files in the mock service directory
 ```bash
 php artisan make:schema  
+php artisan make:schema -f
 
 php artisan make:schema {SERVICE_NAME}
 
@@ -65,7 +29,6 @@ php artisan make:schema {SERVICE_NAME}
  // OUTPUT
  AFTER RUNNING THIS COMMAND index.json FILE WILL CREATE IN THE SERVICE DIRECTORY!'
 ```
-
 
 ## FILE CONVERTER COMMAND
 if you want to conver a file from json to yml or yml to json you can use below commands:
@@ -79,6 +42,19 @@ php artisan convert:files test.yml  test.json
 php artisan convert:files test.json  test.yml
 ```
 
+# Next feature updates 
+- Support OPEN API SPECIFICATION V3.0 and V3.1
+- Generating docker images per service
+- Generate beautiful UI for the index page
+
+## OPEN API SPECIFICATION
+The [OpenAPI Specification (OAS)](https://www.openapis.org) defines a standard, language-agnostic interface to HTTP APIs which allows both humans
+and computers to discover and understand the capabilities of the service without access to source code, documentation,
+or through network traffic inspection. When properly defined, a consumer can understand and interact with the remote service
+with a minimal amount of implementation logic.
+
+An OpenAPI definition can then be used by documentation generation tools to display the API, code generation tools to
+generate servers and clients in various programming languages, testing tools, and many other use cases.
 
 ## License
 The Lumen Mocker is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
