@@ -232,18 +232,18 @@ trait OpisJsonSchema
             abort(Response::HTTP_INTERNAL_SERVER_ERROR, "THERE IS NO RESPONSE FOR {$status} STATUS CODE!");
         }
 
-        $status = $status ?? Response::HTTP_OK;
-        return match ($status) {
-            Response::HTTP_OK => $this->checkToReturnHttpOkResponse(),
-            Response::HTTP_NOT_FOUND => $this->checkToReturnHttpNotFoundResponse(),
+        return match (true) {
+            (Response::HTTP_OK == $status) => $this->checkToReturnHttpOkResponse(),
+            (Response::HTTP_NOT_FOUND == $status) => $this->checkToReturnHttpNotFoundResponse(),
+            (!is_null($status)) => $this->checkToReturnHttpOkResponse(null, $status),
             default => null,
         };
     }
 
 
-    private function checkToReturnHttpOkResponse(string $type = null): string|null
+    private function checkToReturnHttpOkResponse(string $type = null, int $statusCode = null): string|null
     {
-        $this->responseStatusCode = Response::HTTP_OK;
+        $this->responseStatusCode = $statusCode ?? Response::HTTP_OK;
 
         if (!in_array(Response::HTTP_OK, array_keys($this->data['responses']))) {
             if (empty($this->data['responses'])) {
