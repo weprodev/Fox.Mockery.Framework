@@ -120,11 +120,11 @@ class MocksController extends Controller
             return $this->response['response'];
         }
 
-        if (config('settings.response.status')) {
+        if (config('fox_settings.response.status')) {
 
             $examples = $this->response['examples'] ?? [];
 
-            $response = match (strtoupper(config('settings.response.type'))) {
+            $response = match (strtoupper(config('fox_settings.response.type'))) {
                 'EXAMPLE' => empty($examples) ? [] : end($examples),
                 'EXAMPLE_AND_OVERWRITE' => $this->overWriteExampleResponse((empty($examples) ? [] : end($examples))),
                 'SCHEMA' => json_decode($this->schema, true),

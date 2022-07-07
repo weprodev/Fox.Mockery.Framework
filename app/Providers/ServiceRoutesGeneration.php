@@ -10,7 +10,7 @@ class ServiceRoutesGeneration
 
     public function __construct()
     {
-        $this->routeMethods = ['get', 'post', 'put', 'delete', 'patch', 'options', 'head'];
+        $this->routeMethods = ['get', 'post', 'put', 'delete', 'patch', 'options'];
     }
 
     public function generateRoutes()

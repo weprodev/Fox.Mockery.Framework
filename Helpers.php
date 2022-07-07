@@ -18,7 +18,7 @@ if (!function_exists('getAllServices')) {
 
     function getAllServices()
     {
-        return config("services");
+        return config("fox_services");
     }
 }
 
@@ -26,7 +26,7 @@ if (!function_exists('getServiceConfig')) {
 
     function getServiceConfig(string $service_name)
     {
-        $services = config("services");
+        $services = config("fox_services");
         if (!in_array($service_name, array_keys($services))) {
             header("Location: " . url('/'));
             exit;
@@ -51,7 +51,7 @@ if (!function_exists('getSchemaService')) {
 
     function getSchemaService($serviceName): string
     {
-        $baseMockDirectory = base_path(config('settings.base_directory'));
+        $baseMockDirectory = base_path(config('fox_settings.base_directory'));
         $schemaFilePath = $baseMockDirectory . '/' . $serviceName . '/index.json';
 
         if (!file_exists($schemaFilePath)) {

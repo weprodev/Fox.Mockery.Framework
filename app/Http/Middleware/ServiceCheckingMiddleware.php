@@ -20,7 +20,7 @@ class ServiceCheckingMiddleware
 
     private function baseMocksDirectoryValidationCheck(): void
     {
-        $baseMockDirectory = base_path(config('settings.base_directory'));
+        $baseMockDirectory = base_path(config('fox_settings.base_directory'));
 
         if (!is_dir($baseMockDirectory)) {
             throw new BaseMockDirectoryException('There is no mocks directory! please after creating your mocks directory define it in the settings configuration.');
@@ -30,8 +30,8 @@ class ServiceCheckingMiddleware
 
     private function isServiceMocksDirectoryExists(): void
     {
-        $baseMockDirectory = base_path(config('settings.base_directory'));
-        $requiredFields = config('settings.required_service_fields');
+        $baseMockDirectory = base_path(config('fox_settings.base_directory'));
+        $requiredFields = config('fox_settings.required_service_fields');
         $availableServices = getAvailableServices();
 
         foreach ($availableServices as $service_name => $service_data) {

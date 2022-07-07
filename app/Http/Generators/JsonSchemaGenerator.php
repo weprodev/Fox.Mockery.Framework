@@ -34,7 +34,7 @@ class JsonSchemaGenerator extends Generator
     public function getStub(): string
     {
         $jsonBaseDirectory = $this->getBaseServicePath();
-        $items = config('settings.json_schema_fields');
+        $items = config('fox_settings.json_schema_fields');
 
         $jsonsContent = json_encode([]);
         foreach ($items as $index => $value) {

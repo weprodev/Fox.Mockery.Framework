@@ -2,24 +2,27 @@
 
 namespace App\Providers;
 
-use App\Http\Generators\Commands\DockerImageCommand;
-use App\Http\Generators\Commands\DockerServiceGenerationCommand;
-use App\Http\Generators\Commands\JsonSchemaCommand;
-use App\Http\Generators\Commands\JsonYmlConvertCommand;
-use App\Http\Generators\Commands\OpenApiSpecificationCommand;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
+     *
+     * @return void
      */
-    public function register(): void
+    public function register()
     {
-        $this->commands(DockerImageCommand::class);
-        $this->commands(DockerServiceGenerationCommand::class);
-        $this->commands(OpenApiSpecificationCommand::class);
-        $this->commands(JsonSchemaCommand::class);
-        $this->commands(JsonYmlConvertCommand::class);
+        //
+    }
+
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        //
     }
 }

@@ -49,7 +49,7 @@ class OpenApiSpecificationGenerator extends Generator
 
     public function getOpenApiSpecVersion(): string
     {
-        return $this->options['version'] ?? config('openapis.version', '3.1.0');
+        return $this->options['version'] ?? config('fox_openapis.version', '3.1.0');
     }
 
 
@@ -64,7 +64,7 @@ class OpenApiSpecificationGenerator extends Generator
     private function mergingJsonFiles(): string
     {
         $jsonBaseDirectory = $this->getBaseDirectoryOfJsonFiles();
-        $items = config('openapis.fields');
+        $items = config('fox_openapis.fields');
 
         if (!$items) {
             dump("THERE IS NO CONFIG FOR ITEMS, TAKE A LOOK AT THE CONFIG FILES.");
@@ -102,7 +102,7 @@ class OpenApiSpecificationGenerator extends Generator
 
     private function checkRequiredFieldValidation(string $field, string $filePath): void
     {
-        $requiredFields = config('openapis.required_items');
+        $requiredFields = config('fox_openapis.required_items');
 
         if (in_array($field, $requiredFields) && (!file_exists($filePath) && is_dir($field))) {
             dump('YOU DON\'T HAVE REQUIRED JSON FILES IN YOUR DIRECTORY FOR GENERATING OPEN API SPECIFICATION!');
@@ -176,7 +176,7 @@ class OpenApiSpecificationGenerator extends Generator
     private function getBaseDirectoryOfJsonFiles(): string
     {
         return $this->getBasePath() . '/' .
-            rtrim(config('settings.base_directory'), '/') . '/' .
+            rtrim(config('fox_settings.base_directory'), '/') . '/' .
             $this->getServiceName();
     }
 

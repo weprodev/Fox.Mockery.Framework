@@ -18,7 +18,7 @@ trait OpisJsonSchema
 
 
     public function getServiceRoutes(): array
-    {
+    { 
         try {
             $getSchemaJsonContent = getSchemaService($this->serviceName());
         } catch (\Exception $e) {

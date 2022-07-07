@@ -50,7 +50,7 @@ class DockerGenerator extends Generator
 
     public function getOpenApiSpecificationDirectory(): string
     {
-        return config('setting.base_dir', 'mocks/services');
+        return config('fox_setting.base_dir', 'mocks/services');
     }
 
 
@@ -64,10 +64,10 @@ class DockerGenerator extends Generator
     {
         $serviceDockerContent = $this->generateServiceContent();
         $dockerComposeStub = __DIR__ . '/Stubs/docker/docker-compose.stub';
-        $dockerComposeDestinationPath = $this->getBasePath() . '/' . config('settings.docker.path') . '/' . 'docker-compose.yml';
+        $dockerComposeDestinationPath = $this->getBasePath() . '/' . config('fox_settings.docker.path') . '/' . 'docker-compose.yml';
 
         $dockerComposeStubReplacement = [
-            'DOCKER_VERSION' => config('settings.docker.version'),
+            'DOCKER_VERSION' => config('fox_settings.docker.version'),
             'SERVICES' => $serviceDockerContent
         ];
         $dockerComposeContent = (new Stub($dockerComposeStub, $dockerComposeStubReplacement))->render();
@@ -80,9 +80,7 @@ class DockerGenerator extends Generator
     private function generateServiceContent(): string
     {
         $serviceComposeStubPath = __DIR__ . '/Stubs/' . $this->composeStub . '.stub';
-        $availableServices = array_filter(config("services"), function ($service) {
-            return $service['active'];
-        });
+        $availableServices = getAvailableServices();
         $contents = "";
 
         foreach (array_keys($availableServices) as $serviceName) {

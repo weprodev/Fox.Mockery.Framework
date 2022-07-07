@@ -77,7 +77,6 @@ class JsonSchemaCommand extends Command
 
     private function generateJsonSchema($service_name)
     {
-
         $openApiGenerator = new JsonSchemaGenerator([
             'service' => strtolower($service_name),
             'force' => $this->option('force'),

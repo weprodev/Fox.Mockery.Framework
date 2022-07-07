@@ -1,21 +1,23 @@
 {
-    "name": "laravel/lumen",
-    "description": "The Laravel Lumen Framework.",
-    "keywords": ["framework", "laravel", "lumen"],
-    "license": "MIT",
+    "name": "laravel/laravel",
     "type": "project",
+    "description": "The Laravel Framework.",
+    "keywords": ["framework", "laravel"],
+    "license": "MIT",
     "require": {
-        "php": "^8.0",
-        "composer/composer": "^2.3",
-        "guzzlehttp/guzzle": "^7.4",
-        "laravel/lumen-framework": "^9.0",
-        "opis/json-schema": "^2.3",
-        "symfony/yaml": "^6.0"
+        "php": "^8.0.2",
+        "guzzlehttp/guzzle": "^7.2",
+        "laravel/framework": "^9.19",
+        "laravel/sanctum": "^2.14.1",
+        "laravel/tinker": "^2.7"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
+        "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.4",
-        "phpunit/phpunit": "^9.5.10"
+        "nunomaduro/collision": "^6.1",
+        "phpunit/phpunit": "^9.5.10",
+        "spatie/laravel-ignition": "^1.0"
     },
     "autoload": {
         "files": [
@@ -33,9 +35,24 @@
         }
     },
     "scripts": {
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ],
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+        ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php artisan key:generate --ansi"
         ]
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        }
     },
     "config": {
         "optimize-autoloader": true,

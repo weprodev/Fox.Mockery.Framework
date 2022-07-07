@@ -17,7 +17,7 @@ abstract class Generator
     {
         $this->filesystem = new Filesystem;
         $this->options = $options;
-        $this->baseDirectory = rtrim(config('settings.base_directory', '/'), '/');
+        $this->baseDirectory = rtrim(config('fox_settings.base_directory', '/'), '/');
     }
 
     abstract public function getPathConfigNode();
@@ -70,6 +70,7 @@ abstract class Generator
 
     public function run(): int
     {
+
         $this->setUp();
         $path = $this->getDestinationPathGeneratedFile();
 
@@ -124,8 +125,8 @@ abstract class Generator
     public function getConfigGeneratorPath(string $entity, $directoryPath = false): string
     {
         $path = match ($entity) {
-            'docker' => config('settings.docker.image_path', 'deployment/images'),
-            'openapis', 'json-schema' => config('settings.base_directory', 'mocks/services'),
+            'docker' => config('fox_settings.docker.image_path', 'deployment/images'),
+            'openapis', 'json-schema' => config('fox_settings.base_directory', 'mocks/services'),
             default => '',
         };
 
