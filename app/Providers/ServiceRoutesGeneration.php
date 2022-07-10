@@ -2,9 +2,12 @@
 
 namespace App\Providers;
 
+use App\Http\Controllers\MocksController;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
-class ServiceRoutesGeneration
+class ServiceRoutesGeneration extends ServiceProvider
 {
     private array $routeMethods;
 
@@ -42,33 +45,45 @@ class ServiceRoutesGeneration
                 return !empty($matches);
             }, ARRAY_FILTER_USE_BOTH);
 
-            foreach ($listOfArrayWithArguments as $path => $content) {
-                foreach ($content as $method => $pathContent) {
-                    if (!in_array($method, $this->routeMethods)){
-                        continue;
-                    }
+            $this->generateDynamicRoutes($listOfArrayWithArguments, 'indexWithArguments');
 
-                    $routePath = '{service_name}/' . ltrim($path, '/');
-                    app()->router->{$method}($routePath, 'App\Http\Controllers\MocksController@indexWithArguments');
-                }
-            }
+            $routesWithoutVariables = array_diff_key($listOfPaths, $listOfArrayWithArguments);
+            $this->generateDynamicRoutes($routesWithoutVariables);
         }
 
+    }
+
+    private function generateDynamicRoutes($routes, $action = 'index')
+    {
+        foreach ($routes as $path => $content) {
+            foreach ($content as $method => $pathContent) {
+                if (!in_array($method, $this->routeMethods)){
+                    continue;
+                }
+
+                $routePath = '{service_name}/' . ltrim($path, '/');
+                Route::{$method}($routePath, [MocksController::class, $action]);
+            }
+        }
     }
 
     private function settingGeneralServicesRoutes()
     {
         foreach ($this->routeMethods as $method) {
-            app()->router->{$method}('{service_name}', 'App\Http\Controllers\MocksController@index');
-            app()->router->{$method}('{service_name}/{any:.*}', 'App\Http\Controllers\MocksController@index');
+            Route::prefix('{service_name}')->controller(MocksController::class)
+                ->group(function () use ($method) {
+                    Route::{$method}('/', 'index');
+                    // Route::{$method}('/{any}', 'index')->where('any', '.*');
+                });
         }
     }
 
     private function settingDefaultRoutes()
     {
         foreach ($this->routeMethods as $method) {
-            app()->router->{$method}('/', 'App\Http\Controllers\Controller@default');
+            Route::{$method}('/', 'App\Http\Controllers\Controller@default');
         }
     }
+
 
 }

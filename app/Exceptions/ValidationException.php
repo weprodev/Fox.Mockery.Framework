@@ -25,7 +25,7 @@ class ValidationException extends Exception
     private function normalizeErrorResponse()
     {
         $error = $this->details;
-        $formatter = new ErrorFormatter();
+        $formatter = new ErrorFormatter;
 
         $normalizeErrorResponse = function (ValidationError $error) use ($formatter) {
             $schema = $error->schema()->info();

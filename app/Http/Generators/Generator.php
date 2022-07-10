@@ -22,7 +22,7 @@ abstract class Generator
 
     abstract public function getPathConfigNode();
 
-    abstract function getDestinationPathGeneratedFile(): string;
+    abstract public function getDestinationPathGeneratedFile(): string;
 
 
     public function getStub(): string

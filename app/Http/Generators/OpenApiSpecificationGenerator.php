@@ -141,7 +141,8 @@ class OpenApiSpecificationGenerator extends Generator
     private function crawlInnerDirectoriesAndMergingJsonFiles(
         string $pathDirectory,
         array  &$resultContent,
-        string $parentKey = null): void
+        string $parentKey = null
+    ): void
     {
         $innerDirectories = scanDirectoryAndReturnFiles($pathDirectory, 'all');
 

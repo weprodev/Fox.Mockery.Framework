@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Log;
 
 class ServiceCheckingMiddleware
 {
-
     public function handle($request, Closure $next)
     {
         $this->baseMocksDirectoryValidationCheck();

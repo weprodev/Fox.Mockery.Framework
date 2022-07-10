@@ -18,7 +18,7 @@ trait OpisJsonSchema
 
 
     public function getServiceRoutes(): array
-    { 
+    {
         try {
             $getSchemaJsonContent = getSchemaService($this->serviceName());
         } catch (\Exception $e) {
@@ -30,7 +30,7 @@ trait OpisJsonSchema
             abort(Response::HTTP_SERVICE_UNAVAILABLE, "THE SCHEMA FILE IS NOT VALID FOR THIS SERVICE {$this->serviceName()}");
         }
 
-        return $schemaArrayContent['paths'];
+        return $schemaArrayContent['paths'] ?? [];
 //        Cache::remember($this->serviceName(), Carbon::now()->addDays(7), function(){
 //
 //        });
@@ -74,7 +74,8 @@ trait OpisJsonSchema
             return;
         }
 
-        abort(Response::HTTP_NOT_FOUND, "THE REQUESTED URI DOES NOT EXIST!");
+        return;
+        // throw new \Exception(Response::HTTP_NOT_FOUND, "THE REQUESTED URI DOES NOT EXIST!");
     }
 
 
@@ -86,7 +87,7 @@ trait OpisJsonSchema
 
         $requestBodyContentSchema = $this->getRequestBodyContentSchema() ?? "{}";
 
-        $validator = new Validator();
+        $validator = new Validator;
         $result = $validator->validate(Helper::toJSON($this->getAllBodyRequests()), $requestBodyContentSchema);
 
         if ($result->isValid()) {
@@ -119,9 +120,8 @@ trait OpisJsonSchema
     private function checkingRoutesWithArgumentBinding(): bool
     {
         $bindingsArray = request()->route();
-        $bindingsArray = end($bindingsArray);
+        $bindingsArray = $bindingsArray->parameters();
         unset($bindingsArray['service_name']);
-        unset($bindingsArray['any']);
 
         if (empty($bindingsArray)) {
             return false;
@@ -180,7 +180,7 @@ trait OpisJsonSchema
     }
 
 
-    private function serviceName(): string
+    private function serviceName(): ?string
     {
         return request('service_name');
     }
@@ -244,6 +244,10 @@ trait OpisJsonSchema
 
     private function checkToReturnHttpOkResponse(string $type = null, int $statusCode = null): string|null
     {
+        if(!$this->data){
+            return null;
+        }
+
         $this->responseStatusCode = $statusCode ?? Response::HTTP_OK;
 
         if (!in_array(Response::HTTP_OK, array_keys($this->data['responses']))) {
