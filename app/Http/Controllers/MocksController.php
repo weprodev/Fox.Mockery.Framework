@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Traits\OpisJsonSchema;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 
 class MocksController extends Controller
 {
@@ -43,6 +44,18 @@ class MocksController extends Controller
     public function indexWithArguments(...$arguments): JsonResponse
     {
         return $this->index();
+    }
+
+
+    public function serviceDocumentation(Request $request, $service_name)
+    {
+        $docs = getSchemaService($service_name);
+
+        if($request->wantsJson()){
+            return response()->json($docs);
+        }
+
+        return view('service-docs', compact('docs', 'service_name'));
     }
 
 
