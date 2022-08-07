@@ -4,7 +4,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\File;
 
-if (!function_exists('getAvailableServices')) {
+if (! function_exists('getAvailableServices')) {
 
     function getAvailableServices()
     {
@@ -14,28 +14,29 @@ if (!function_exists('getAvailableServices')) {
     }
 }
 
-if (!function_exists('getAllServices')) {
+if (! function_exists('getAllServices')) {
 
     function getAllServices()
     {
-        return config("fox_services");
+        return config('fox_services');
     }
 }
 
-if (!function_exists('getServiceConfig')) {
+if (! function_exists('getServiceConfig')) {
 
     function getServiceConfig(string $service_name)
     {
-        $services = config("fox_services");
-        if (!in_array($service_name, array_keys($services))) {
-            header("Location: " . url('/'));
+        $services = config('fox_services');
+        if (! in_array($service_name, array_keys($services))) {
+            header('Location: '.url('/'));
             exit;
         }
+
         return $services[$service_name];
     }
 }
 
-if (!function_exists('mergingTwoJsonFile')) {
+if (! function_exists('mergingTwoJsonFile')) {
 
     function mergingTwoJsonFile($first_json_file, $second_json_file): string
     {
@@ -47,23 +48,23 @@ if (!function_exists('mergingTwoJsonFile')) {
     }
 }
 
-if (!function_exists('getSchemaService')) {
+if (! function_exists('getSchemaService')) {
 
     function getSchemaService($serviceName): string
     {
         $baseMockDirectory = base_path(config('fox_settings.base_directory'));
-        $schemaFilePath = $baseMockDirectory . '/' . $serviceName . '/index.json';
+        $schemaFilePath = $baseMockDirectory.'/'.$serviceName.'/index.json';
 
-        if (!file_exists($schemaFilePath)) {
-            return "{}";
-            throw new \Exception('Schema File Does Not Exist Or We Couldn\'t Open The File! ' . $schemaFilePath);
+        if (! file_exists($schemaFilePath)) {
+            return '{}';
+            throw new \Exception('Schema File Does Not Exist Or We Couldn\'t Open The File! '.$schemaFilePath);
         }
 
         return File::get($schemaFilePath);
     }
 }
 
-if (!function_exists('jsonResponse')) {
+if (! function_exists('jsonResponse')) {
 
     function jsonResponse(array $data, int $statusCode = Response::HTTP_OK, array $headers = []): JsonResponse
     {
@@ -71,11 +72,11 @@ if (!function_exists('jsonResponse')) {
     }
 }
 
-if (!function_exists('scanDirectoryAndReturnFiles')) {
+if (! function_exists('scanDirectoryAndReturnFiles')) {
 
     function scanDirectoryAndReturnFiles(string $pathDirectory, string $type = null): array
     {
-        if (!is_dir($pathDirectory)) {
+        if (! is_dir($pathDirectory)) {
             return [];
         }
 
@@ -84,11 +85,11 @@ if (!function_exists('scanDirectoryAndReturnFiles')) {
         return array_filter($allPathFiles, function ($file_name) use ($pathDirectory, $type) {
 
             if ($type == 'all') {
-                return !in_array($file_name, ['.', '..']);
+                return ! in_array($file_name, ['.', '..']);
             }
 
             if (is_null($type)) {
-                return is_dir(rtrim($pathDirectory, '/') . '/' . $file_name) && (!in_array($file_name, ['.', '..']));
+                return is_dir(rtrim($pathDirectory, '/').'/'.$file_name) && (! in_array($file_name, ['.', '..']));
             }
 
             return str_contains($file_name, $type);

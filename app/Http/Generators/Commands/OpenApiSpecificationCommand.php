@@ -13,14 +13,13 @@ class OpenApiSpecificationCommand extends Command
     protected $name = 'make:openapi';
 
     protected $description = 'Create/re-generate an OPEN API SPECIFICATION for service.';
-    protected string $type = "Open API Specification";
 
+    protected string $type = 'Open API Specification';
 
     public function handle(): void
     {
         $this->laravel->call([$this, 'fire'], func_get_args());
     }
-
 
     public function fire(): void
     {
@@ -31,22 +30,21 @@ class OpenApiSpecificationCommand extends Command
             if ($serviceName) {
 
                 $this->generateOpenApiSpec($serviceName);
-                $this->info($this->type . ' created for ' . $serviceName . ' successfully.');
+                $this->info($this->type.' created for '.$serviceName.' successfully.');
             } else {
 
                 foreach (getAvailableServices() as $serviceName => $service) {
                     $this->generateOpenApiSpec($serviceName);
-                    $this->info($this->type . ' CREATED FOR ' . $serviceName . ' SUCCESSFULLY!');
+                    $this->info($this->type.' CREATED FOR '.$serviceName.' SUCCESSFULLY!');
                 }
             }
 
-
         } catch (GenerateOpenApiSpecificationException $exception) {
-            $this->error($this->type . ': ' . $exception->getMessage());
+            $this->error($this->type.': '.$exception->getMessage());
+
             return;
         }
     }
-
 
     public function getArguments(): array
     {
@@ -55,17 +53,16 @@ class OpenApiSpecificationCommand extends Command
                 'service',
                 InputArgument::OPTIONAL,
                 'The name of service being generated.',
-                null
+                null,
             ],
             [
                 'version',
                 InputArgument::OPTIONAL,
                 'The version of the open api specification.',
-                null
+                null,
             ],
         ];
     }
-
 
     public function getOptions(): array
     {
@@ -75,11 +72,10 @@ class OpenApiSpecificationCommand extends Command
                 'f',
                 InputOption::VALUE_NONE,
                 'Force the creation if file already exists.',
-                null
-            ]
+                null,
+            ],
         ];
     }
-
 
     private function generateOpenApiSpec($service_name)
     {
@@ -91,5 +87,4 @@ class OpenApiSpecificationCommand extends Command
         ]);
         $openApiGenerator->run();
     }
-
 }

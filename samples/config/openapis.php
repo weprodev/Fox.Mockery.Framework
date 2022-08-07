@@ -67,8 +67,8 @@ return [
 
             'components' => [
                 'tags' => 'nullable',
-                'schemas' => 'nullable'
-            ]
-        ]
-    ]
+                'schemas' => 'nullable',
+            ],
+        ],
+    ],
 ];

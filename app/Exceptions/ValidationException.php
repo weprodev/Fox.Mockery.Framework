@@ -9,7 +9,7 @@ use Opis\JsonSchema\JsonPointer;
 
 class ValidationException extends Exception
 {
-    private $details;
+    private mixed $details;
 
     public function __construct(string $exception_message, $details = null)
     {
@@ -58,8 +58,7 @@ class ValidationException extends Exception
             return implode('.', $error->data()->fullPath());
         };
 
-        return $formatter->format($error, false, $normalizeErrorResponse, $normalizeKeys)[""] ??
+        return $formatter->format($error, false, $normalizeErrorResponse, $normalizeKeys)[''] ??
             $formatter->format($error, false, $normalizeErrorResponse, $normalizeKeys);
     }
-
 }

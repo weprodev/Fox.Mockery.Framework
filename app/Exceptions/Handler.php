@@ -3,8 +3,8 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Throwable;
 use Illuminate\Http\Response;
+use Throwable;
 
 class Handler extends ExceptionHandler
 {
@@ -54,8 +54,9 @@ class Handler extends ExceptionHandler
         if ($exception instanceof \App\Exceptions\ValidationException) {
             $response = [
                 'message' => $exception->getMessage(),
-                'errors' => $exception->getDetails()
+                'errors' => $exception->getDetails(),
             ];
+
             return response()->json($response, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 

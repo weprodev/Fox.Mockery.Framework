@@ -11,15 +11,15 @@ class DockerServiceGenerationCommand extends Command
     protected $name = 'make:docker';
 
     protected $description = 'Generate all of the available services in docker.';
-    protected ?Collection $generators = null;
-    protected string $type = "Docker Service Generation";
 
+    protected ?Collection $generators = null;
+
+    protected string $type = 'Docker Service Generation';
 
     public function handle(): void
     {
         $this->laravel->call([$this, 'fire'], func_get_args());
     }
-
 
     public function fire(): void
     {
@@ -30,27 +30,25 @@ class DockerServiceGenerationCommand extends Command
                 $this->call('make:docker-image', [
                     'service' => $service_name,
                     'port' => $service['port'],
-                    '--force' => true
+                    '--force' => true,
                 ]);
 
             } catch (FileAlreadyExistsException $e) {
-                $this->error($this->type . ' already exists!');
+                $this->error($this->type.' already exists!');
+
                 return;
             }
         }
 
     }
 
-
     public function getArguments(): array
     {
         return [];
     }
 
-
     public function getOptions(): array
     {
         return [];
     }
-
 }

@@ -4,22 +4,26 @@ namespace App\Http\Controllers;
 
 use App\Http\Traits\OpisJsonSchema;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class MocksController extends Controller
 {
     use OpisJsonSchema;
 
     protected mixed $response;
+
     protected ?string $schema;
+
     protected string $responseType;
+
     protected string|null $envelope;
+
     protected string|null $overwrite;
 
     public function __construct()
     {
-        $this->responseType = strtoupper(trim(request()->header('X-RESPONSE-TYPE') ?? "DATA"));
+        $this->responseType = strtoupper(trim(request()->header('X-RESPONSE-TYPE') ?? 'DATA'));
         $this->envelope = strtolower(trim(request()->header('X-ENVELOPE-RESPONSE'))) ?? null;
         $this->overwrite = request()->header('X-OVERWRITE-CONTENT') ?? null;
         $this->requestedStatusCodeResponse = request()->header('X-STATUS-CODE') ?? null;
@@ -34,7 +38,7 @@ class MocksController extends Controller
             return jsonResponse([], $this->responseStatusCode);
         }
 
-        if ($this->responseType == "EXAMPLE") {
+        if ($this->responseType == 'EXAMPLE') {
             return $this->returnExampleResponse();
         }
 
@@ -46,24 +50,22 @@ class MocksController extends Controller
         return $this->index();
     }
 
-
     public function serviceDocumentation(Request $request, $service_name)
     {
         $docs = getSchemaService($service_name);
 
-        if($request->wantsJson()){
+        if ($request->wantsJson()) {
             return response()->json($docs);
         }
 
         return view('service-docs', compact('docs', 'service_name'));
     }
 
-
     private function returnDataResponse(): JsonResponse
     {
         $data = [
             'schema' => json_decode($this->schema, true),
-            'examples' => $this->response['examples'] ?? []
+            'examples' => $this->response['examples'] ?? [],
         ];
 
         $data = $this->generateResponseData($data);
@@ -148,7 +150,7 @@ class MocksController extends Controller
                 $data['response'] = $response;
             }
         }
+
         return $data;
     }
-
 }

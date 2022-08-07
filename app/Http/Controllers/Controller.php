@@ -5,13 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller as BaseController;
 
 class Controller extends BaseController
 {
-    use AuthorizesRequests;use DispatchesJobs;use ValidatesRequests;
-
+    use AuthorizesRequests;
+    use DispatchesJobs;
+    use ValidatesRequests;
 
     public function default(Request $request)
     {
@@ -21,7 +22,7 @@ class Controller extends BaseController
             'all' => getAllServices(),
         ];
 
-        if($request->wantsJson()){
+        if ($request->wantsJson()) {
 
             $data = [
                 'message' => 'Please add the service name as a prefix in the url.',
@@ -33,6 +34,7 @@ class Controller extends BaseController
                 ],
             ];
             $data['services'] = $services;
+
             return response()->json($data);
         }
 

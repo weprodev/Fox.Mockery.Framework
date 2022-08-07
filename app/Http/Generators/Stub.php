@@ -5,9 +5,10 @@ namespace App\Http\Generators;
 class Stub
 {
     protected static null|string $basePath = null;
-    protected string $path;
-    protected array $replaces = [];
 
+    protected string $path;
+
+    protected array $replaces = [];
 
     public function __construct($path, array $replaces = [])
     {
@@ -15,18 +16,15 @@ class Stub
         $this->replaces = $replaces;
     }
 
-
     public static function create(string $path, array $replaces = []): self
     {
         return new static($path, $replaces);
     }
 
-
     public static function setBasePath(string $path): void
     {
         static::$basePath = $path;
     }
-
 
     public function replace(array $replaces = []): Stub
     {
@@ -35,24 +33,20 @@ class Stub
         return $this;
     }
 
-
     public function getReplaces(): array
     {
         return $this->replaces;
     }
-
 
     public function __toString(): string
     {
         return $this->render();
     }
 
-
     public function render(): string
     {
         return $this->getContents();
     }
-
 
     public function getContents(): null|string
     {
@@ -64,12 +58,10 @@ class Stub
         return $contents;
     }
 
-
     public function getStubPath(): string
     {
         return static::$basePath . $this->path;
     }
-
 
     public function setPath(string $path): self
     {
@@ -77,5 +69,4 @@ class Stub
 
         return $this;
     }
-
 }

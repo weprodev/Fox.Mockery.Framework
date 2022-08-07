@@ -3,9 +3,9 @@
 namespace App\Providers;
 
 use App\Http\Controllers\MocksController;
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 class ServiceRoutesGeneration extends ServiceProvider
 {
@@ -20,7 +20,7 @@ class ServiceRoutesGeneration extends ServiceProvider
     {
         foreach (getAvailableServices() as $serviceName => $service) {
 
-            $serviceDocsPath = '{service_name}/' . config('fox_settings.service_home_prefix');
+            $serviceDocsPath = '{service_name}/'.config('fox_settings.service_home_prefix');
             Route::get($serviceDocsPath, [MocksController::class, 'serviceDocumentation']);
 
             $this->settingBindingServicesRoutes($serviceName);
@@ -45,7 +45,8 @@ class ServiceRoutesGeneration extends ServiceProvider
             $listOfPaths = $schemaArrayContent['paths'];
             $listOfArrayWithArguments = array_filter($listOfPaths, function ($content, $path) {
                 preg_match('/{(?<=\{).*?(?=\})}/m', $path, $matches);
-                return !empty($matches);
+
+                return ! empty($matches);
             }, ARRAY_FILTER_USE_BOTH);
 
             $this->generateDynamicRoutes($listOfArrayWithArguments, 'indexWithArguments');
@@ -60,11 +61,11 @@ class ServiceRoutesGeneration extends ServiceProvider
     {
         foreach ($routes as $path => $content) {
             foreach ($content as $method => $pathContent) {
-                if (!in_array($method, $this->routeMethods)){
+                if (! in_array($method, $this->routeMethods)) {
                     continue;
                 }
 
-                $routePath = '{service_name}/' . ltrim($path, '/');
+                $routePath = '{service_name}/'.ltrim($path, '/');
                 Route::{$method}($routePath, [MocksController::class, $action]);
             }
         }
@@ -87,6 +88,4 @@ class ServiceRoutesGeneration extends ServiceProvider
             Route::{$method}('/', 'App\Http\Controllers\Controller@default');
         }
     }
-
-
 }

@@ -7,8 +7,8 @@ use App\Exceptions\ReferencePathException;
 class JsonSchemaGenerator extends Generator
 {
     protected string $stub = 'json-schema/json-schema.stub';
-    protected string $name;
 
+    protected string $name;
 
     public function __construct(array $options = [])
     {
@@ -16,20 +16,17 @@ class JsonSchemaGenerator extends Generator
         $this->name = $this->getServiceName();
     }
 
-
     public function getPathConfigNode(): string
     {
         return 'json-schema';
     }
 
-
     public function getDestinationPathGeneratedFile(): string
     {
-        return $this->getBasePath() . '/' .
-            parent::getConfigGeneratorPath($this->getPathConfigNode(), true) . '/' .
-            $this->getName() . '/index.json';
+        return $this->getBasePath().'/'.
+            parent::getConfigGeneratorPath($this->getPathConfigNode(), true).'/'.
+            $this->getName().'/index.json';
     }
-
 
     public function getStub(): string
     {
@@ -39,14 +36,14 @@ class JsonSchemaGenerator extends Generator
         $jsonsContent = json_encode([]);
         foreach ($items as $index => $value) {
 
-            $filePath = $jsonBaseDirectory . '/' . $index . '.json';
+            $filePath = $jsonBaseDirectory.'/'.$index.'.json';
 
             if (file_exists($filePath)) {
                 $jsonsContent = mergingTwoJsonFile($jsonsContent, file_get_contents($filePath));
             }
 
             if ($index == 'paths') {
-                $pathsJsonContents = $this->mergingPathsJsonFiles($jsonBaseDirectory . '/' . $index);
+                $pathsJsonContents = $this->mergingPathsJsonFiles($jsonBaseDirectory.'/'.$index);
                 $jsonsContent = mergingTwoJsonFile($jsonsContent, $pathsJsonContents);
             }
         }
@@ -54,29 +51,26 @@ class JsonSchemaGenerator extends Generator
         return $jsonsContent;
     }
 
-
     public function getServiceName(): string
     {
         return strtolower($this->options['service']);
     }
 
-
     private function mergingPathsJsonFiles(string $pathDirectory): string
     {
-        if (!is_dir($pathDirectory)) {
+        if (! is_dir($pathDirectory)) {
             return '{"paths": ""}';
         }
 
         $jsonPathsFiles = scanDirectoryAndReturnFiles($pathDirectory);
         $jsonPathsContent = $this->mergingAllPathsJsonFiles($pathDirectory);
-        foreach ($jsonPathsFiles as $path){
-            $jsonInnerPathContent =  $this->mergingAllPathsJsonFiles($pathDirectory . '/' . $path);
+        foreach ($jsonPathsFiles as $path) {
+            $jsonInnerPathContent = $this->mergingAllPathsJsonFiles($pathDirectory.'/'.$path);
             $jsonPathsContent = mergingTwoJsonFile($jsonPathsContent, $jsonInnerPathContent);
         }
 
-        return '{"paths": ' . $jsonPathsContent . '}';
+        return '{"paths": '.$jsonPathsContent.'}';
     }
-
 
     private function mergingAllPathsJsonFiles($pathDirectory): string
     {
@@ -84,7 +78,7 @@ class JsonSchemaGenerator extends Generator
 
         $jsonPathsContent = json_encode([]);
         foreach ($jsonPathsFiles as $jsonFile) {
-            $filePath = $pathDirectory . '/' . $jsonFile;
+            $filePath = $pathDirectory.'/'.$jsonFile;
             $data = $this->prepareJsonPathItem($filePath);
             $jsonPathsContent = mergingTwoJsonFile($jsonPathsContent, json_encode($data));
         }
@@ -92,21 +86,20 @@ class JsonSchemaGenerator extends Generator
         return $jsonPathsContent;
     }
 
-
     private function prepareJsonPathItem(string $filePath): array
     {
         $arrayPathsJson = json_decode(file_get_contents($filePath), true);
-        $referenceKeyRoutes = "";
+        $referenceKeyRoutes = '';
+
         return $this->recursiveFunctionToReplaceReference($arrayPathsJson, $referenceKeyRoutes);
     }
-
 
     private function recursiveFunctionToReplaceReference(array $data, &$keyRoutes): array
     {
         foreach ($data as $key => $value) {
 
             if (is_array($value)) {
-                $keyRoutes = ($keyRoutes != "") ? ($keyRoutes . '.' . $key) : $key;
+                $keyRoutes = ($keyRoutes != '') ? ($keyRoutes.'.'.$key) : $key;
                 $data[$key] = $this->recursiveFunctionToReplaceReference($value, $keyRoutes);
             }
 
@@ -120,26 +113,25 @@ class JsonSchemaGenerator extends Generator
 
             }
         }
+
         return $data;
     }
-
 
     private function getReferenceContent(string $referenceRoute): array
     {
         $referencePath = ltrim($referenceRoute, '/');
-        $referencePath = $this->getBaseServicePath() . '/' . $referencePath;
+        $referencePath = $this->getBaseServicePath().'/'.$referencePath;
 
         if (str_contains($referenceRoute, '#')) {
             $referencePath = ltrim(substr($referenceRoute, strpos($referenceRoute, '#') + 1), '/');
-            $referencePath = $this->getBaseServicePath() . '/' . $referencePath;
+            $referencePath = $this->getBaseServicePath().'/'.$referencePath;
         }
         $referencePath .= '.json';
 
-        if (!file_exists($referencePath)) {
-            throw new ReferencePathException('THE FILE WHICH YOU REFERENCED DOES NOT EXIST! <<' . $referencePath . '>>');
+        if (! file_exists($referencePath)) {
+            throw new ReferencePathException('THE FILE WHICH YOU REFERENCED DOES NOT EXIST! <<'.$referencePath.'>>');
         }
 
         return json_decode(file_get_contents($referencePath), true);
     }
-
 }

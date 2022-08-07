@@ -13,9 +13,10 @@ use Opis\JsonSchema\Validator;
 trait OpisJsonSchema
 {
     protected $data;
-    protected int $responseStatusCode;
-    protected int|null $requestedStatusCodeResponse;
 
+    protected int $responseStatusCode;
+
+    protected int|null $requestedStatusCodeResponse;
 
     public function getServiceRoutes(): array
     {
@@ -36,7 +37,6 @@ trait OpisJsonSchema
 //        });
     }
 
-
     public function getSchema(): ?string
     {
         if (in_array($this->requestMethod(), ['get', 'delete'])) {
@@ -44,9 +44,9 @@ trait OpisJsonSchema
         }
 
         $this->validateAndSetRequestBodyData();
+
         return $this->getRequestBodyContentSchema();
     }
-
 
     public function getResponseContent(): ?string
     {
@@ -55,9 +55,9 @@ trait OpisJsonSchema
         if (is_null($responseBody)) {
             $this->responseStatusCode = Response::HTTP_NO_CONTENT;
         }
+
         return $responseBody;
     }
-
 
     public function validateAndSetRequestBodyData()
     {
@@ -67,17 +67,16 @@ trait OpisJsonSchema
 
         $listOfArrayWhichHasArguments = array_filter($this->getServiceRoutes(), function ($content, $path) {
             preg_match('/{(?<=\{).*?(?=\})}/m', $path, $matches);
-            return !empty($matches);
+
+            return ! empty($matches);
         }, ARRAY_FILTER_USE_BOTH);
 
-        if (!empty($listOfArrayWhichHasArguments) && $this->checkingRoutesWithArgumentBinding()) {
+        if (! empty($listOfArrayWhichHasArguments) && $this->checkingRoutesWithArgumentBinding()) {
             return;
         }
 
-        return;
         // throw new \Exception(Response::HTTP_NOT_FOUND, "THE REQUESTED URI DOES NOT EXIST!");
     }
-
 
     public function dataValidation(array $data)
     {
@@ -85,7 +84,7 @@ trait OpisJsonSchema
             abort(400, 'Request Body Is Required!');
         }
 
-        $requestBodyContentSchema = $this->getRequestBodyContentSchema() ?? "{}";
+        $requestBodyContentSchema = $this->getRequestBodyContentSchema() ?? '{}';
 
         $validator = new Validator;
         $result = $validator->validate(Helper::toJSON($this->getAllBodyRequests()), $requestBodyContentSchema);
@@ -99,7 +98,6 @@ trait OpisJsonSchema
         }
     }
 
-
     public function __get($method)
     {
         if (method_exists($this, $method)) {
@@ -108,7 +106,6 @@ trait OpisJsonSchema
 
         throw new \Exception("$method DOES NOT EXIST!");
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -130,7 +127,7 @@ trait OpisJsonSchema
         $uriWithoutBindingValues = $this->requestUri();
         foreach ($bindingsArray as $keyPath => $value) {
             if (str_contains($this->requestUri(), $value)) {
-                $uriWithoutBindingValues = str_replace($value, '{' . $keyPath . '}', $uriWithoutBindingValues);
+                $uriWithoutBindingValues = str_replace($value, '{'.$keyPath.'}', $uriWithoutBindingValues);
             }
         }
 
@@ -140,7 +137,6 @@ trait OpisJsonSchema
 
         return false;
     }
-
 
     private function settingDataResponse(string $requestUri = null): bool
     {
@@ -155,104 +151,98 @@ trait OpisJsonSchema
                 $data = $requestRouteContent[$this->requestMethod()];
                 $this->data = $data;
                 $this->dataValidation($data);
+
                 return true;
             }
 
             if (isset($requestRouteContent['default'])) {
                 $this->data = $requestRouteContent['default'];
+
                 return true;
             }
 
-            abort(405, "METHOD NOT ALLOWED FOR THIS ROUTE!");
+            abort(405, 'METHOD NOT ALLOWED FOR THIS ROUTE!');
         }
 
         return false;
     }
 
-
     private function requestBodyIsRequired(array $data): bool
     {
-        if (!isset($data['requestBody']) || empty($data['requestBody'])) {
+        if (! isset($data['requestBody']) || empty($data['requestBody'])) {
             return false;
         }
 
         return $data['requestBody']['required'] ?? false;
     }
 
-
     private function serviceName(): ?string
     {
         return request('service_name');
     }
 
-
     private function serviceUrl(): string
     {
-        return url() . '/' . $this->serviceName();
+        return url().'/'.$this->serviceName();
     }
-
 
     private function requestUri(): string
     {
         return substr(request()->path(), strlen($this->serviceName()));
     }
 
-
     private function requestMethod(): string
     {
         return strtolower(request()->method());
     }
-
 
     private function getAllBodyRequests(string $key = null): array
     {
         return request()->all($key);
     }
 
-
     private function getAllHeaderRequests(string $key = null): array
     {
         return request()->header($key);
     }
 
-
     private function getRequestBodyContentSchema(): string|null
     {
-        if (!isset($this->data['requestBody']['content']['application/json']['schema'])) {
+        if (! isset($this->data['requestBody']['content']['application/json']['schema'])) {
             return null;
         }
 
         return json_encode($this->data['requestBody']['content']['application/json']['schema'], JSON_PRETTY_PRINT);
     }
 
-
     private function getResponseBodyContentSchema(int $status = null): string|null
     {
-        if ($status && !isset($this->data['responses']["$status"])) {
+        if ($status && ! isset($this->data['responses']["$status"])) {
             abort(Response::HTTP_INTERNAL_SERVER_ERROR, "THERE IS NO RESPONSE FOR {$status} STATUS CODE!");
         }
 
         $status = $status ?? (request('X-STATUS-CODE') ?? Response::HTTP_OK);
+
         return match (true) {
             (Response::HTTP_OK == $status) => $this->checkToReturnHttpOkResponse(),
             (Response::HTTP_NOT_FOUND == $status) => $this->checkToReturnHttpNotFoundResponse(),
-            (!is_null($status)) => $this->checkToReturnHttpOkResponse(null, $status),
+            (! is_null($status)) => $this->checkToReturnHttpOkResponse(null, $status),
             default => null,
         };
     }
 
-
     private function checkToReturnHttpOkResponse(string $type = null, int $statusCode = null): string|null
     {
-        if(!$this->data){
+        if(! $this->data) {
             return null;
         }
 
         $this->responseStatusCode = $statusCode ?? Response::HTTP_OK;
 
-        if (!in_array(Response::HTTP_OK, array_keys($this->data['responses']))) {
+        if (! in_array(Response::HTTP_OK, array_keys($this->data['responses']))) {
             if (empty($this->data['responses'])) {
                 $this->responseStatusCode = Response::HTTP_NO_CONTENT;
+
                 return null;
             }
 
@@ -262,7 +252,7 @@ trait OpisJsonSchema
         $responseContent = $this->data['responses'][$this->responseStatusCode];
         $responseContent = $responseContent['content']['application/json'] ?? null;
 
-        $type = !in_array($type, ['schema', 'examples']) ? null : $type;
+        $type = ! in_array($type, ['schema', 'examples']) ? null : $type;
 
         if ($type == 'schema' && isset($responseContent['schema'])) {
             return json_encode($responseContent['schema'], JSON_PRETTY_PRINT);
@@ -279,7 +269,6 @@ trait OpisJsonSchema
         return $responseContent ? json_encode($responseContent, JSON_PRETTY_PRINT) : null;
     }
 
-
     private function checkToReturnHttpNotFoundResponse(): string|null
     {
         $this->responseStatusCode = Response::HTTP_NOT_FOUND;
@@ -292,5 +281,4 @@ trait OpisJsonSchema
 
         return $responseContent ? json_encode($responseContent, JSON_PRETTY_PRINT) : null;
     }
-
 }

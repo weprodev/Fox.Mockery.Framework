@@ -12,14 +12,13 @@ class JsonSchemaCommand extends Command
     protected $name = 'make:schema';
 
     protected $description = 'Create/re-generate a JSON Schema for services.';
-    protected string $type = "JSON SCHEMA";
 
+    protected string $type = 'JSON SCHEMA';
 
     public function handle(): void
     {
         $this->laravel->call([$this, 'fire'], func_get_args());
     }
-
 
     public function fire(): void
     {
@@ -30,23 +29,22 @@ class JsonSchemaCommand extends Command
             if ($serviceName) {
 
                 $this->generateJsonSchema($serviceName);
-                $this->info($this->type . ' created for ' . $serviceName . ' successfully.');
+                $this->info($this->type.' created for '.$serviceName.' successfully.');
 
             } else {
 
                 foreach (getAvailableServices() as $serviceName => $service) {
                     $this->generateJsonSchema($serviceName);
-                    $this->info($this->type . ' CREATED FOR ' . $serviceName . ' SUCCESSFULLY.');
+                    $this->info($this->type.' CREATED FOR '.$serviceName.' SUCCESSFULLY.');
                 }
             }
 
-
         } catch (\Exception $exception) {
-            $this->error($this->type . ': ' . $exception->getMessage());
+            $this->error($this->type.': '.$exception->getMessage());
+
             return;
         }
     }
-
 
     public function getArguments(): array
     {
@@ -55,11 +53,10 @@ class JsonSchemaCommand extends Command
                 'service',
                 InputArgument::OPTIONAL,
                 'The name of service being generated.',
-                null
-            ]
+                null,
+            ],
         ];
     }
-
 
     public function getOptions(): array
     {
@@ -69,11 +66,10 @@ class JsonSchemaCommand extends Command
                 'f',
                 InputOption::VALUE_NONE,
                 'Force the creation if file already exists.',
-                null
-            ]
+                null,
+            ],
         ];
     }
-
 
     private function generateJsonSchema($service_name)
     {
@@ -83,5 +79,4 @@ class JsonSchemaCommand extends Command
         ]);
         $openApiGenerator->run();
     }
-
 }
