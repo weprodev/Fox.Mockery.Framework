@@ -49,7 +49,7 @@
                                 <div class="flex items-center">
                                     <div class="text-lg leading-7 font-semibold">
                                         @if ($service['active'])
-                                            <a href="{{ $service['active'] ? url($key . '/' . config('fox_settings.service_home_prefix', '') ) : '#' }}" class="underline text-gray-900 dark:text-white">
+                                            <a href="{{ $service['active'] ? url($key . '/' . config('fox_settings.service_docs_prefix', '') ) : '#' }}" class="underline text-gray-900 dark:text-white">
                                                 {{ Str::upper($key) }}
                                             </a>
                                         @else

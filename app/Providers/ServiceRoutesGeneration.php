@@ -20,7 +20,7 @@ class ServiceRoutesGeneration extends ServiceProvider
     {
         foreach (getAvailableServices() as $serviceName => $service) {
 
-            $serviceDocsPath = '{service_name}/'.config('fox_settings.service_home_prefix');
+            $serviceDocsPath = '{service_name}/'.config('fox_settings.service_docs_prefix');
             Route::get($serviceDocsPath, [MocksController::class, 'serviceDocumentation']);
 
             $this->settingBindingServicesRoutes($serviceName);
