@@ -1,0 +1,61 @@
+version: "3.9"
+services:
+
+    app-fox:
+        build:
+            args:
+                user: fox-mockery
+                uid: 1000
+            context: ./images/php
+            dockerfile: Dockerfile
+        image: foxmockery-servers
+        container_name: Fox-Mockery
+        restart: unless-stopped
+        working_dir: /var/www/
+        tty: true
+        volumes:
+            - ../:/var/www
+            - ./images/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+        networks:
+            - fox-mockery-network
+
+    nginx-fox:
+        image: nginx:1.17-alpine
+        container_name: nginx-fox-mockery
+        restart: unless-stopped
+        tty: true
+        ports:
+            - "8085:80"
+        volumes:
+            - ./../:/var/www
+            - ./images/nginx:/etc/nginx/conf.d
+        networks:
+            - fox-mockery-network
+
+#    mysql-fox:
+#        image: mysql:latest
+#        container_name: mysql-fox-mockery
+#        restart: unless-stopped
+#        tty: true
+#        ports:
+#            - "3308:3306"
+#        environment:
+#            MYSQL_DATABASE: db-fox
+#            MYSQL_ROOT_PASSWORD: db-fox-password
+#            MYSQL_USER: db-fox-user
+#            SERVICE_TAGS: dev
+#            SERVICE_NAME: mysql
+#        volumes:
+#            - ./images/database/mysql/mysql-files:/var/lib/mysql-files
+#            - ./images/database/mysql/my.cnf:/etc/mysql/my.cnf
+#        networks:
+#            - fox-mockery-network
+
+networks:
+    fox-mockery-network:
+        driver: bridge
+        name: fox-mockery-network
+#
+#volumes:
+#    dbdata:
+#        driver: local

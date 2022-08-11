@@ -404,7 +404,7 @@
 <div class="">
 
     <p>
-        <a href="{{ url('/') }}">Return back to home</a>
+        <a href="{{ url('/') }}"><b>Return back to home</b></a>
     </p>
 
     <ul>
