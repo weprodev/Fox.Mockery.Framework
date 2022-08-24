@@ -52,7 +52,7 @@ class Stub
     {
         $contents = file_get_contents($this->getStubPath());
         foreach ($this->replaces as $search => $replace) {
-            $contents = str_replace('$' . strtoupper($search) . '$', $replace, $contents);
+            $contents = str_replace('$'.strtoupper($search).'$', $replace, $contents);
         }
 
         return $contents;
@@ -60,7 +60,7 @@ class Stub
 
     public function getStubPath(): string
     {
-        return static::$basePath . $this->path;
+        return static::$basePath.$this->path;
     }
 
     public function setPath(string $path): self

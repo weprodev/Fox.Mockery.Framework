@@ -96,3 +96,30 @@ if (! function_exists('scanDirectoryAndReturnFiles')) {
         });
     }
 }
+
+if (! function_exists('getBaseDirectoryOfJsonFilesForService')) {
+
+    function getBaseDirectoryOfJsonFilesForService($serviceName): string
+    {
+        return rtrim(base_path(), '/').'/'.
+            rtrim(config('fox_settings.base_directory'), '/').'/'.
+            $serviceName;
+    }
+}
+
+if (! function_exists('mergingJsonFilesInDirectory')) {
+
+    function mergingJsonFilesInDirectory(string $pathDirectory): string
+    {
+        $jsonPathsFiles = scanDirectoryAndReturnFiles($pathDirectory, '.json');
+
+        $jsonContent = json_encode([]);
+        foreach ($jsonPathsFiles as $jsonFile) {
+            $filePath = $pathDirectory.'/'.$jsonFile;
+            $jsonContent = mergingTwoJsonFile($jsonContent, file_get_contents($filePath));
+        }
+
+        return $jsonContent;
+    }
+
+}

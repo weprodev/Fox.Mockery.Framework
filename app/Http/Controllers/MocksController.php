@@ -59,10 +59,9 @@ class MocksController extends Controller
         }
 
         $docs = json_decode($docs, true);
+
         return view('service-docs', compact('docs', 'service_name'));
     }
-
-
 
     private function returnDataResponse(): JsonResponse
     {

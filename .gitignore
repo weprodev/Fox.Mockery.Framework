@@ -1,13 +1,11 @@
 /vendor
 /.idea
-Homestead.json
-Homestead.yaml
 .env
 .phpunit.result.cache
 .DS_Store
+Homestead.json
+Homestead.yaml
 .editorconfig
 composer.lock
 storage/logs
-config
-mocks
 deployment/*
