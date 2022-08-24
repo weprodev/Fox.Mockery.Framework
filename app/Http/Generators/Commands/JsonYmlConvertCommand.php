@@ -2,7 +2,6 @@
 
 namespace App\Http\Generators\Commands;
 
-use Composer\Json\JsonFile;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputArgument;
@@ -44,6 +43,7 @@ class JsonYmlConvertCommand extends Command
 
         if ('json' === $fromFormat) {
             $outputContent = $this->convertToYaml($sourceContent);
+            $outputContent = $this->normalizeDataAfterConvert($outputContent);
             $filesystem->put($to, $outputContent);
 
             return;
@@ -80,13 +80,33 @@ class JsonYmlConvertCommand extends Command
     {
         $data = Yaml::parse($content);
 
-        return JsonFile::encode($data, JSON_PRETTY_PRINT)."\n";
+        return json_encode($data, JSON_PRETTY_PRINT)."\n";
     }
 
     private function convertToYaml($content): string
     {
-        $data = JsonFile::parseJson($content);
+        $data = json_decode($content, true);
 
         return Yaml::dump($data, 20);
+    }
+
+    private function normalizeDataAfterConvert($content): string
+    {
+        foreach ($this->getAvailableStatusCodes() as $statusCode) {
+            $content = str_replace($statusCode, "'".$statusCode."'", $content);
+        }
+
+        return $content;
+    }
+
+    private function getAvailableStatusCodes(): array
+    {
+        $availableStatusCodes = [
+            200, 201, 204,
+            400, 401, 404,
+            500, 503,
+        ];
+
+        return config('fox_settings.available_status_codes') ?? $availableStatusCodes;
     }
 }

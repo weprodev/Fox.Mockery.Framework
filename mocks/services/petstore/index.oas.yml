@@ -11,13 +11,16 @@ info:
     license:
         name: 'Apache 2.0'
         url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
+servers:
+    -
+        url: 'http://localhost:8085'
 paths:
     /pets:
         get:
             summary: 'List all pets'
             operationId: listPets
             tags:
-                - pets
+                - pet
             parameters:
                 -
                     name: limit
@@ -49,7 +52,7 @@ paths:
             summary: 'Create a pet'
             operationId: createPets
             tags:
-                - pets
+                - pet
             responses:
                 '201':
                     description: 'Null response'
@@ -64,7 +67,7 @@ paths:
             summary: 'Info for a specific pet'
             operationId: showPetById
             tags:
-                - pets
+                - pet
             parameters:
                 -
                     name: petId
@@ -116,3 +119,10 @@ components:
             type: array
             items:
                 $ref: '#/components/schemas/Pet'
+tags:
+    -
+        name: pet
+        description: 'Everything about your pets'
+        externalDocs:
+            description: 'Find out more'
+            url: 'http://example.com'

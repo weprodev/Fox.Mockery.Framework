@@ -10,9 +10,9 @@ use Symfony\Component\Console\Input\InputOption;
 
 class OpenApiSpecificationCommand extends Command
 {
-    protected $name = 'make:openapi';
+    protected $name = 'fox:openapi {--oas=3.0.3}';
 
-    protected $description = 'Create/re-generate an OPEN API SPECIFICATION for service.';
+    protected $description = 'Create/re-generate an OPEN API SPECIFICATION for service with default OAS Version.';
 
     protected string $type = 'Open API Specification';
 
@@ -55,12 +55,6 @@ class OpenApiSpecificationCommand extends Command
                 'The name of service being generated.',
                 null,
             ],
-            [
-                'version',
-                InputArgument::OPTIONAL,
-                'The version of the open api specification.',
-                null,
-            ],
         ];
     }
 
@@ -74,6 +68,13 @@ class OpenApiSpecificationCommand extends Command
                 'Force the creation if file already exists.',
                 null,
             ],
+            [
+                'oas',
+                'oas',
+                InputArgument::OPTIONAL,
+                'The version of the open api specification.',
+                null,
+            ],
         ];
     }
 
@@ -82,7 +83,7 @@ class OpenApiSpecificationCommand extends Command
 
         $openApiGenerator = new OpenApiSpecificationGenerator([
             'service' => strtolower($service_name),
-            'version' => $this->argument('version'),
+            'version' => $this->option('oas'),
             'force' => $this->option('force'),
         ]);
         $openApiGenerator->run();
