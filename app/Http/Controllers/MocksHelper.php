@@ -69,7 +69,8 @@ final class MocksHelper
 
     public static function headerRequestResponseType(): string
     {
-        return strtolower(trim(request()->header('X-RESPONSE-TYPE') ?? 'DATA'));
+        return strtolower(trim(request()->header('X-RESPONSE-TYPE') ??
+            config('fox_settings.default_response_type', 'ALL')));
     }
 
     public static function headerRequestEnvelope(): string|null
@@ -79,9 +80,9 @@ final class MocksHelper
         return $envelope ? strtolower(trim($envelope)) : null;
     }
 
-    public static function headerRequestOverwriteContent(): string|null
+    public static function headerRequestOverwriteContent(): bool
     {
-        return request()->header('X-OVERWRITE-CONTENT') ?? null;
+        return (bool) request()->header('X-OVERWRITE-CONTENT');
     }
 
     public static function headerRequestStatusCode(): int
@@ -119,8 +120,12 @@ final class MocksHelper
     {
         foreach ($content as $index => $value) {
 
-            if (is_array($value) && isset($value['$ref'])) {
-                $content[$index] = MocksHelper::getReferenceContent(end($value));
+            if (is_array($value)) {
+                $content[$index] = self::normalizeReferenceContentInNestedArray($value);
+            }
+
+            if ($index == '$ref') {
+                return MocksHelper::getReferenceContent($value);
             }
         }
 
@@ -187,7 +192,6 @@ final class MocksHelper
 
     /**
      * @throws GetServiceRouteException
-     * @throws ReferencePathException
      */
     public static function getResponseBodyData(): array
     {
@@ -200,9 +204,8 @@ final class MocksHelper
         }
 
         $dataResponse = $dataResponse[$responseStatusCode];
-        $dataResponseContent = $dataResponse['content']['application/json'] ?? [];
 
-        return MocksHelper::normalizeReferenceContentInNestedArray($dataResponseContent);
+        return $dataResponse['content']['application/json'] ?? [];
     }
 
     public static function returnResponseBodyWithEnvelope(array $responseDataBody): array

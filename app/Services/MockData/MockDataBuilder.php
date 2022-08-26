@@ -18,10 +18,13 @@ final class MockDataBuilder
 
     /**
      * @throws \App\Exceptions\GetServiceRouteException
+     * @throws \App\Exceptions\ReferencePathException
      */
     public function withPathContent(): self
     {
-        $this->mockeryResponse->setPathContent(MocksHelper::getDataPathContent());
+        $getPathContent = MocksHelper::getDataPathContent();
+        $normalizePathContent = MocksHelper::normalizeReferenceContentInNestedArray($getPathContent);
+        $this->mockeryResponse->setPathContent($normalizePathContent);
 
         return $this;
     }
@@ -32,7 +35,9 @@ final class MockDataBuilder
      */
     public function withResponseBody(): self
     {
-        $this->mockeryResponse->setResponseBodyContent(MocksHelper::getResponseBodyData());
+        $getResponseBody = MocksHelper::getResponseBodyData();
+        $normalizeResponseBody = MocksHelper::normalizeReferenceContentInNestedArray($getResponseBody);
+        $this->mockeryResponse->setResponseBodyContent($normalizeResponseBody);
 
         return $this;
     }
@@ -52,19 +57,13 @@ final class MockDataBuilder
         $dataResponseContent = MocksHelper::getResponseBodyData();
         $headerRequestResponseType = MocksHelper::headerRequestResponseType();
 
+        $dataResponseSchemaContent = [];
         if ($headerRequestResponseType === 'schema' && isset($dataResponseContent['schema'])) {
-            $dataResponseSchemaContent = $dataResponseContent['schema'];
 
-            if (isset($dataResponseSchemaContent['$ref'])) {
-
-                $responseDataBody = MocksHelper::getReferenceContent($dataResponseSchemaContent['$ref']);
-                $this->mockeryResponse->setSchema(MocksHelper::returnResponseBodyWithEnvelope($responseDataBody));
-
-                return $this;
-            }
-
-            $this->mockeryResponse->setSchema($dataResponseSchemaContent);
+            $dataResponseSchemaContent = MocksHelper::normalizeReferenceContentInNestedArray($dataResponseContent['schema']);
         }
+
+        $this->mockeryResponse->setSchema($dataResponseSchemaContent);
 
         return $this;
     }

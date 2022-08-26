@@ -8,15 +8,11 @@ return [
     // fox_settings.service_docs_prefix
     'service_docs_prefix' => 'docs',    // for showing list of the routes for each service
 
-    'response' => [
-        'status' => true,
-        // fox_settings.response.type
-        'type' => 'EXAMPLE_AND_OVERWRITE', // EXAMPLE, EXAMPLE_AND_OVERWRITE, SCHEMA
-    ],
+    // fox_settings.default_response_type
+    'default_response_type' => 'ALL', // EXAMPLE, EXAMPLE_AND_OVERWRITE, SCHEMA, BODY, ALL
 
     // fox_settings.required_service_fields
     'required_service_fields' => [
-        'prefix',
         'port',
     ],
 
