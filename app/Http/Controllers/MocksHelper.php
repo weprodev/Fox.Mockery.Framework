@@ -5,15 +5,13 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Exceptions\GetServiceRouteException;
-
 //use Illuminate\Http\Response;
 use App\Exceptions\ReferencePathException;
-use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 use Illuminate\Support\Facades\File;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 final class MocksHelper
 {
-
     public static function getServiceRoutes(string $serviceName): array
     {
         try {
@@ -38,9 +36,9 @@ final class MocksHelper
     public static function getSchemaService($serviceName): string
     {
         $baseMockDirectory = base_path(config('fox_settings.base_directory'));
-        $schemaFilePath = $baseMockDirectory . '/' . $serviceName . '/index.json';
+        $schemaFilePath = $baseMockDirectory.'/'.$serviceName.'/index.json';
 
-        if (!file_exists($schemaFilePath)) {
+        if (! file_exists($schemaFilePath)) {
             return '{}';
         }
 
@@ -55,6 +53,7 @@ final class MocksHelper
     public static function requestUri(): string
     {
         $serviceName = MocksHelper::getServiceName();
+
         return substr(request()->path(), strlen($serviceName));
     }
 
@@ -76,6 +75,7 @@ final class MocksHelper
     public static function headerRequestEnvelope(): string|null
     {
         $envelope = request()->header('X-ENVELOPE-RESPONSE') ?? null;
+
         return $envelope ? strtolower(trim($envelope)) : null;
     }
 
@@ -86,7 +86,7 @@ final class MocksHelper
 
     public static function headerRequestStatusCode(): int
     {
-        return request()->header('X-STATUS-CODE') ? (int)request()->header('X-STATUS-CODE') : ResponseAlias::HTTP_OK;
+        return request()->header('X-STATUS-CODE') ? (int) request()->header('X-STATUS-CODE') : ResponseAlias::HTTP_OK;
     }
 
     /**
@@ -95,19 +95,20 @@ final class MocksHelper
     public static function getReferenceContent(string $referenceRoute): array
     {
         $referencePath = ltrim($referenceRoute, '/');
-        $referencePath = getBaseServicePath() . '/' . $referencePath;
+        $referencePath = getBaseServicePath().'/'.$referencePath;
 
         if (str_contains($referenceRoute, '#')) {
             $referencePath = ltrim(substr($referenceRoute, strpos($referenceRoute, '#') + 1), '/');
-            $referencePath = getBaseServicePath() . '/' . $referencePath;
+            $referencePath = getBaseServicePath().'/'.$referencePath;
         }
         $referencePath .= '.json';
 
-        if (!file_exists($referencePath)) {
-            throw new ReferencePathException('THE FILE WHICH YOU REFERENCED DOES NOT EXIST! <<' . $referencePath . '>>');
+        if (! file_exists($referencePath)) {
+            throw new ReferencePathException('THE FILE WHICH YOU REFERENCED DOES NOT EXIST! <<'.$referencePath.'>>');
         }
 
         $getContent = json_decode(file_get_contents($referencePath), true);
+
         return MocksHelper::normalizeReferenceContentInNestedArray($getContent);
     }
 
@@ -122,6 +123,7 @@ final class MocksHelper
                 $content[$index] = MocksHelper::getReferenceContent(end($value));
             }
         }
+
         return $content;
     }
 
@@ -152,30 +154,30 @@ final class MocksHelper
             abort(405, 'METHOD NOT ALLOWED FOR THIS ROUTE!');
         }
 
-
         $pattern = '/{(?<=\{).*?(?=\})}/m';
         $listOfArrayWhichHasArguments = array_filter($serviceRoutes, function ($content, $path) use ($pattern) {
             preg_match($pattern, $path, $matches);
-            return !empty($matches);
+
+            return ! empty($matches);
         }, ARRAY_FILTER_USE_BOTH);
 
-        if (!empty($listOfArrayWhichHasArguments)) {
+        if (! empty($listOfArrayWhichHasArguments)) {
 
             $bindingsArray = request()->route();
             $bindingsArray = $bindingsArray->parameters();
             unset($bindingsArray['service_name']);
 
-            if (!empty($bindingsArray)) {
+            if (! empty($bindingsArray)) {
 
                 $uriWithoutBindingValues = $requestUri;
                 foreach ($bindingsArray as $keyPath => $value) {
                     if (str_contains($requestUri, $value)) {
-                        $uriWithoutBindingValues = str_replace($value, '{' . $keyPath . '}', $uriWithoutBindingValues);
+                        $uriWithoutBindingValues = str_replace($value, '{'.$keyPath.'}', $uriWithoutBindingValues);
                     }
                 }
 
                 if ($uriWithoutBindingValues !== $requestUri) {
-                    return MocksHelper::getDataResponseContent($uriWithoutBindingValues);
+                    return MocksHelper::getDataPathContent($uriWithoutBindingValues);
                 }
             }
         }
@@ -187,43 +189,31 @@ final class MocksHelper
      * @throws GetServiceRouteException
      * @throws ReferencePathException
      */
-    public static function getResponseBodyData(string $type = null, int $statusCode = null): array
+    public static function getResponseBodyData(): array
     {
         $data = MocksHelper::getDataPathContent();
         $responseStatusCode = MocksHelper::headerRequestStatusCode() ?? ResponseAlias::HTTP_OK;
         $dataResponse = $data['responses'] ?? [];
 
-        if (empty($dataResponse) || !in_array($responseStatusCode, array_keys($data['responses']))) {
+        if (empty($dataResponse) || ! in_array($responseStatusCode, array_keys($data['responses']))) {
             return [];
         }
 
         $dataResponse = $dataResponse[$responseStatusCode];
         $dataResponseContent = $dataResponse['content']['application/json'] ?? [];
 
-        if (empty($dataResponseContent)) {
-            return [];
-        }
-
-        $headerRequestResponseType = MocksHelper::headerRequestResponseType();
-
-        if ($headerRequestResponseType === 'schema' && isset($dataResponseContent['schema'])) {
-            $dataResponseSchemaContent = $dataResponseContent['schema'];
-
-            if (isset($dataResponseSchemaContent['$ref'])) {
-                return MocksHelper::getReferenceContent($dataResponseSchemaContent['$ref']);
-            }
-
-            return $dataResponseSchemaContent;
-        }
-
-        if ($headerRequestResponseType == 'example') {
-            #TODO prepare example
-            #return json_encode($responseContent['examples'], JSON_PRETTY_PRINT);
-        }
-
         return MocksHelper::normalizeReferenceContentInNestedArray($dataResponseContent);
     }
 
+    public static function returnResponseBodyWithEnvelope(array $responseDataBody): array
+    {
+        $envelopeKey = MocksHelper::headerRequestEnvelope();
+        if (! is_null($envelopeKey)) {
+            return [$envelopeKey => $responseDataBody];
+        }
+
+        return $responseDataBody;
+    }
 
     public static function submitDataValidation(array $data)
     {
@@ -241,15 +231,4 @@ final class MocksHelper
 //            throw new ValidationException($result->error()->message(), $result->error());
 //        }
     }
-
-    public static function getSchemaRequest()
-    {
-
-//        if (! isset($this->data['requestBody']['content']['application/json']['schema'])) {
-//            return null;
-//        }
-//
-//        return json_encode($this->data['requestBody']['content']['application/json']['schema'], JSON_PRETTY_PRINT);
-    }
-
 }

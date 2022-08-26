@@ -37,9 +37,9 @@ final class OpenApiSpecBuilder
      */
     public function withInfo(): self
     {
-        $filePath = $this->baseDirectoryOfJsonFiles . '/' . 'info.json';
+        $filePath = $this->baseDirectoryOfJsonFiles.'/'.'info.json';
 
-        if (!file_exists($filePath)) {
+        if (! file_exists($filePath)) {
             throw new FileDoesNotExistException('Info file is a required file and it doesn\'t exist!');
         }
 
@@ -51,9 +51,9 @@ final class OpenApiSpecBuilder
 
     public function withTags(): self
     {
-        $tagFilePath = $this->baseDirectoryOfJsonFiles . '/' . 'tags.json';
+        $tagFilePath = $this->baseDirectoryOfJsonFiles.'/'.'tags.json';
 
-        if (!file_exists($tagFilePath)) {
+        if (! file_exists($tagFilePath)) {
             return $this;
         }
 
@@ -65,8 +65,8 @@ final class OpenApiSpecBuilder
 
     public function withPaths(): self
     {
-        $pathDirectory = $this->baseDirectoryOfJsonFiles . '/' . 'paths';
-        if (!is_dir($pathDirectory)) {
+        $pathDirectory = $this->baseDirectoryOfJsonFiles.'/'.'paths';
+        if (! is_dir($pathDirectory)) {
             $this->openApiSpec->setPaths([]);
 
             return $this;
@@ -84,8 +84,8 @@ final class OpenApiSpecBuilder
      */
     public function withComponents(): self
     {
-        $componentsDirectory = $this->baseDirectoryOfJsonFiles . '/' . 'components';
-        if (!is_dir($componentsDirectory)) {
+        $componentsDirectory = $this->baseDirectoryOfJsonFiles.'/'.'components';
+        if (! is_dir($componentsDirectory)) {
             $this->openApiSpec->setComponents([]);
 
             return $this;
@@ -103,19 +103,19 @@ final class OpenApiSpecBuilder
      */
     private function crawlInnerDirectoriesAndMergingJsonFiles(
         string $pathDirectory,
-        array  &$resultContent,
+        array &$resultContent,
         string $parentKey = null
-    ): void
-    {
+    ): void {
 
         $innerDirectories = scanDirectoryAndReturnFiles($pathDirectory, 'all');
 
         foreach ($innerDirectories as $item) {
 
-            $innerPathDirectory = $pathDirectory . '/' . $item;
+            $innerPathDirectory = $pathDirectory.'/'.$item;
 
             if (is_dir($innerPathDirectory)) {
                 $this->crawlInnerDirectoriesAndMergingJsonFiles($innerPathDirectory, $resultContent, $item);
+
                 continue;
             }
 
@@ -127,6 +127,7 @@ final class OpenApiSpecBuilder
 
                 if ($parentKey) {
                     $resultContent[$parentKey][$fileName] = json_decode($jsonFileContent, true);
+
                     continue;
                 }
 
@@ -138,8 +139,8 @@ final class OpenApiSpecBuilder
 
     public function withExternalDocs(): self
     {
-        $externalDocsPath = $this->baseDirectoryOfJsonFiles . '/' . 'externalDocs.json';
-        if (!file_exists($externalDocsPath)) {
+        $externalDocsPath = $this->baseDirectoryOfJsonFiles.'/'.'externalDocs.json';
+        if (! file_exists($externalDocsPath)) {
             return $this;
         }
 
@@ -151,8 +152,8 @@ final class OpenApiSpecBuilder
 
     public function withSecurity(): self
     {
-        $securityPath = $this->baseDirectoryOfJsonFiles . '/' . 'security.json';
-        if (!file_exists($securityPath)) {
+        $securityPath = $this->baseDirectoryOfJsonFiles.'/'.'security.json';
+        if (! file_exists($securityPath)) {
             $this->openApiSpec->setSecurity([]);
 
             return $this;
@@ -166,8 +167,8 @@ final class OpenApiSpecBuilder
 
     public function withServers(): self
     {
-        $serversPath = $this->baseDirectoryOfJsonFiles . '/' . 'servers.json';
-        if (!file_exists($serversPath)) {
+        $serversPath = $this->baseDirectoryOfJsonFiles.'/'.'servers.json';
+        if (! file_exists($serversPath)) {
             return $this;
         }
 
@@ -184,5 +185,4 @@ final class OpenApiSpecBuilder
     {
         return new OpenApiSpecRequest($this->openApiSpec);
     }
-
 }

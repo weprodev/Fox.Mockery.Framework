@@ -9,13 +9,12 @@ use Illuminate\Support\Facades\Artisan;
 
 final class OpenApiSpecFactory
 {
-
     /**
      * @throws \App\Exceptions\ValidationException
      */
     public static function makeFileFromBuilder(OpenApiSpecBuilder $openApiSpecBuilder): void
     {
-        $destinationTempPath = $openApiSpecBuilder->baseDirectoryOfJsonFiles . '/index.json';
+        $destinationTempPath = $openApiSpecBuilder->baseDirectoryOfJsonFiles.'/index.json';
         $openApiSpecificationRequest = $openApiSpecBuilder->build();
 
         $filesystem = new Filesystem;
@@ -24,5 +23,4 @@ final class OpenApiSpecFactory
         $ymlDestinationPath = str_replace('.json', '.oas.yml', $destinationTempPath);
         Artisan::call("convert:files $destinationTempPath $ymlDestinationPath");
     }
-
 }

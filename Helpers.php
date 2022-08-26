@@ -129,7 +129,7 @@ if (! function_exists('getBaseServicePath')) {
     function getBaseServicePath(): string
     {
         $baseServicePath = rtrim(base_path(), '/').'/'.
-            \App\Http\Controllers\MocksHelper::getBaseDirectory() .'/'.
+            \App\Http\Controllers\MocksHelper::getBaseDirectory().'/'.
             \App\Http\Controllers\MocksHelper::getServiceName();
 
         return rtrim($baseServicePath, '/');

@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Log;
 
 class ServiceCheckingMiddleware
 {
+    /**
+     * @throws BaseMockDirectoryException
+     * @throws \Exception
+     */
     public function handle($request, Closure $next)
     {
         $this->baseMocksDirectoryValidationCheck();
@@ -21,7 +25,8 @@ class ServiceCheckingMiddleware
         $baseMockDirectory = base_path(config('fox_settings.base_directory'));
 
         if (! is_dir($baseMockDirectory)) {
-            throw new BaseMockDirectoryException('There is no mocks directory! please after creating your mocks directory define it in the settings configuration.');
+            throw new BaseMockDirectoryException('There is no mocks directory!
+            please after creating your mocks directory define it in the settings configuration.');
         }
     }
 
@@ -41,7 +46,8 @@ class ServiceCheckingMiddleware
             }
 
             if (! is_dir($baseMockDirectory.'/'.$service_name)) {
-                throw new \Exception("There is no mocks directory for $service_name, so you can de-activate the service in the service configuration file.");
+                throw new \Exception("There is no mocks directory for $service_name,
+                so you can de-activate the service in the service configuration file.");
             }
 
         }
