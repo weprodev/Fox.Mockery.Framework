@@ -15,7 +15,7 @@ servers:
     -
         url: 'http://localhost:8085'
 paths:
-    /pets:
+    /petstore/pets:
         get:
             summary: 'List all pets'
             operationId: listPets
@@ -62,7 +62,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Error'
-    '/pets/{petId}':
+    '/petstore/pets/{petId}':
         get:
             summary: 'Info for a specific pet'
             operationId: showPetById
@@ -111,10 +111,13 @@ components:
                 id:
                     type: integer
                     format: int64
+                    example: 1
                 name:
                     type: string
+                    example: Lucy
                 tag:
                     type: string
+                    example: Persian
         Pets:
             type: array
             items:

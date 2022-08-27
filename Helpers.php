@@ -53,7 +53,7 @@ if (! function_exists('getSchemaService')) {
     function getSchemaService($serviceName): string
     {
         $baseMockDirectory = base_path(config('fox_settings.base_directory'));
-        $schemaFilePath = $baseMockDirectory.'/'.$serviceName.'/index.json';
+        $schemaFilePath = $baseMockDirectory.'/'.$serviceName.'/route.json';
 
         if (! file_exists($schemaFilePath)) {
             return '{}';

@@ -12,6 +12,8 @@ final class OpenApiSpecBuilder
 {
     public string $baseDirectoryOfJsonFiles;
 
+    private string $serviceName;
+
     private Filesystem $filesystem;
 
     private OpenApiSpecV30 $openApiSpec;
@@ -22,6 +24,7 @@ final class OpenApiSpecBuilder
     {
         $this->filesystem = new Filesystem;
         $this->openApiSpec = new OpenApiSpecV30;
+        $this->serviceName = $serviceName;
         $this->baseDirectoryOfJsonFiles = getBaseDirectoryOfJsonFilesForService($serviceName);
     }
 
@@ -184,5 +187,10 @@ final class OpenApiSpecBuilder
     public function build(): OpenApiSpecRequest
     {
         return new OpenApiSpecRequest($this->openApiSpec);
+    }
+
+    public function getServiceName(): string
+    {
+        return $this->serviceName;
     }
 }
