@@ -2,7 +2,6 @@
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\File;
 
 if (! function_exists('getAvailableServices')) {
 
@@ -45,22 +44,6 @@ if (! function_exists('mergingTwoJsonFile')) {
         $mergedContents = array_merge($firstArrayContent ?? [], $secondArrayContent ?? []);
 
         return json_encode($mergedContents, JSON_PRETTY_PRINT);
-    }
-}
-
-if (! function_exists('getSchemaService')) {
-
-    function getSchemaService($serviceName): string
-    {
-        $baseMockDirectory = base_path(config('fox_settings.base_directory'));
-        $schemaFilePath = $baseMockDirectory.'/'.$serviceName.'/route.json';
-
-        if (! file_exists($schemaFilePath)) {
-            return '{}';
-            throw new \Exception('Schema File Does Not Exist Or We Couldn\'t Open The File! '.$schemaFilePath);
-        }
-
-        return File::get($schemaFilePath);
     }
 }
 

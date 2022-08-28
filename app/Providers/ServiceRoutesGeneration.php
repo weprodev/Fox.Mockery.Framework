@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 use App\Http\Controllers\MocksController;
+use App\Http\Controllers\MocksHelper;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 
 class ServiceRoutesGeneration extends ServiceProvider
@@ -31,19 +31,16 @@ class ServiceRoutesGeneration extends ServiceProvider
         $this->settingDefaultRoutes();
     }
 
+    /**
+     * @throws \App\Exceptions\GetServiceRouteException
+     */
     private function settingBindingServicesRoutes($serviceName)
     {
-        $getSchemaJsonContent = getSchemaService($serviceName);
+        $serviceRouteArrayContent = MocksHelper::getServiceRoutes($serviceName);
 
-        $schemaArrayContent = json_decode($getSchemaJsonContent, true);
-        if (is_null($schemaArrayContent)) {
-            abort(Response::HTTP_SERVICE_UNAVAILABLE, "THE SCHEMA FILE IS NOT VALID FOR THIS SERVICE $serviceName");
-        }
+        if (! empty($serviceRouteArrayContent)) {
 
-        if (isset($schemaArrayContent['paths'])) {
-
-            $listOfPaths = $schemaArrayContent['paths'];
-            $listOfArrayWithArguments = array_filter($listOfPaths, function ($content, $path) {
+            $listOfArrayWithArguments = array_filter($serviceRouteArrayContent, function ($content, $path) {
                 preg_match('/{(?<=\{).*?(?=\})}/m', $path, $matches);
 
                 return ! empty($matches);
@@ -51,7 +48,7 @@ class ServiceRoutesGeneration extends ServiceProvider
 
             $this->generateDynamicRoutes($listOfArrayWithArguments, 'indexWithArguments');
 
-            $routesWithoutVariables = array_diff_key($listOfPaths, $listOfArrayWithArguments);
+            $routesWithoutVariables = array_diff_key($serviceRouteArrayContent, $listOfArrayWithArguments);
             $this->generateDynamicRoutes($routesWithoutVariables);
         }
 

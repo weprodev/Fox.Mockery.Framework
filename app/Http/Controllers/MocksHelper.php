@@ -15,34 +15,33 @@ final class MocksHelper
     public static function getServiceRoutes(string $serviceName): array
     {
         try {
-            $getSchemaJsonContent = MocksHelper::getSchemaService($serviceName);
+            $getServiceJsonContent = MocksHelper::getServiceContent($serviceName);
 
         } catch (\Exception $e) {
             throw new GetServiceRouteException($e->getMessage());
         }
 
-        $schemaArrayContent = json_decode($getSchemaJsonContent, true);
-        if (is_null($schemaArrayContent)) {
+        $serviceArrayContent = json_decode($getServiceJsonContent, true);
+        if (is_null($serviceArrayContent)) {
             abort(ResponseAlias::HTTP_SERVICE_UNAVAILABLE,
                 "THE SCHEMA FILE IS NOT VALID FOR THIS SERVICE $serviceName");
         }
 
-        return $schemaArrayContent['paths'] ?? [];
-//        Cache::remember($this->serviceName(), Carbon::now()->addDays(7), function(){
-//
-//        });
+        return $serviceArrayContent['paths'] ?? [];
+
+        //TODO CACHE ...
     }
 
-    public static function getSchemaService($serviceName): string
+    public static function getServiceContent($serviceName): string
     {
         $baseMockDirectory = base_path(config('fox_settings.base_directory'));
-        $schemaFilePath = $baseMockDirectory.'/'.$serviceName.'/route.json';
+        $serviceFileRoutePath = $baseMockDirectory.'/'.$serviceName.'/route.json';
 
-        if (! file_exists($schemaFilePath)) {
+        if (! file_exists($serviceFileRoutePath)) {
             return '{}';
         }
 
-        return File::get($schemaFilePath);
+        return File::get($serviceFileRoutePath);
     }
 
     public static function getServiceName(): string
@@ -218,11 +217,11 @@ final class MocksHelper
         return $responseDataBody;
     }
 
-    public static function submitDataValidation(array $data)
+    public static function submitDataValidation(): void
     {
 
-//        $requestBodyContentSchema = $this->getRequestBodyContentSchema() ?? '{}';
-//
+//        $requestSchemaContent = MocksHelper::getServiceContent(MocksHelper::getServiceName());
+
 //        $validator = new Validator;
 //        $result = $validator->validate(Helper::toJSON($this->getAllBodyRequests()), $requestBodyContentSchema);
 //
