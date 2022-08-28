@@ -55,6 +55,17 @@
             "tags": [
                 "pet"
             ],
+            "requestBody": {
+                "description": "Create a pet record",
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/PetRequest"
+                        }
+                    }
+                }
+            },
             "responses": {
                 "201": {
                     "description": "Null response"

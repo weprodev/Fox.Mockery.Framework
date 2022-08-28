@@ -27,9 +27,9 @@ class OpenApiSpecificationGenerator extends Generator
 
     public function getDestinationPathGeneratedFile(): string
     {
-        return $this->getBasePath() . '/' .
-            parent::getConfigGeneratorPath($this->getPathConfigNode(), true) . '/' .
-            $this->getName() . '/index.oas3.yml';
+        return $this->getBasePath().'/'.
+            parent::getConfigGeneratorPath($this->getPathConfigNode(), true).'/'.
+            $this->getName().'/index.oas3.yml';
     }
 
     /**

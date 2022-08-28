@@ -1,50 +1,70 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
-use App\Http\Traits\OpisJsonSchema;
+use App\Exceptions\ServiceIsNotValidException;
+use App\Services\MockData\MockDataBuilder;
+use App\Services\MockData\MockDataFactory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
-class MocksController extends Controller
+final class MocksController extends Controller
 {
-    use OpisJsonSchema;
+    private string $responseType;
 
-    protected mixed $response;
+    private string|null $envelope;
 
-    protected ?string $schema;
+    private bool $overwrite;
 
-    protected string $responseType;
+    private int|null $requestedStatusCodeResponse;
 
-    protected string|null $envelope;
-
-    protected string|null $overwrite;
-
+    /**
+     * @throws ServiceIsNotValidException
+     * @throws \App\Exceptions\GetServiceRouteException
+     */
     public function __construct()
     {
-        $this->responseType = strtoupper(trim(request()->header('X-RESPONSE-TYPE') ?? 'DATA'));
-        $this->envelope = strtolower(trim(request()->header('X-ENVELOPE-RESPONSE'))) ?? null;
-        $this->overwrite = request()->header('X-OVERWRITE-CONTENT') ?? null;
-        $this->requestedStatusCodeResponse = request()->header('X-STATUS-CODE') ?? null;
-
-        $this->schema = $this->getSchema();
-        $this->response = json_decode($this->getResponseContent(), true);
+        $this->serviceNameValidation();
+        $this->initialize();
     }
 
+    private function initialize()
+    {
+        $this->responseType = MocksHelper::headerRequestResponseType();
+        $this->envelope = MocksHelper::headerRequestEnvelope();
+        $this->overwrite = MocksHelper::headerRequestOverwriteContent();
+        $this->requestedStatusCodeResponse = MocksHelper::headerRequestStatusCode();
+    }
+
+    /**
+     * @throws \App\Exceptions\GetServiceRouteException
+     * @throws \App\Exceptions\ReferencePathException
+     * @throws \App\Exceptions\ValidationException
+     */
     public function index(): JsonResponse
     {
-        if ($this->responseStatusCode === Response::HTTP_NO_CONTENT) {
-            return jsonResponse([], $this->responseStatusCode);
-        }
+        MocksHelper::submitDataValidation();
 
-        if ($this->responseType == 'EXAMPLE') {
-            return $this->returnExampleResponse();
-        }
+        $mockDataBuilder = new MockDataBuilder;
+        $mockDataBuilder = $mockDataBuilder
+            ->withPathContent()
+            ->withResponseBody()
+            ->withSchema()
+            ->withExample()
+            ->build();
 
-        return $this->returnDataResponse();
+        $mockDataResponse = MockDataFactory::generateResponseFromRequestObject($mockDataBuilder);
+
+        return $mockDataResponse->getJsonResponseData();
     }
 
+    /**
+     * @throws \App\Exceptions\ReferencePathException
+     * @throws \App\Exceptions\ValidationException
+     * @throws \App\Exceptions\GetServiceRouteException
+     */
     public function indexWithArguments(...$arguments): JsonResponse
     {
         return $this->index();
@@ -52,7 +72,7 @@ class MocksController extends Controller
 
     public function serviceDocumentation(Request $request, $service_name)
     {
-        $docs = getSchemaService($service_name);
+        $docs = MocksHelper::getServiceContent($service_name);
 
         if ($request->wantsJson()) {
             return response()->json($docs);
@@ -63,11 +83,23 @@ class MocksController extends Controller
         return view('service-docs', compact('docs', 'service_name'));
     }
 
+    private function serviceNameValidation()
+    {
+        $serviceName = request('service_name');
+        $isServiceValid = in_array($serviceName, array_keys(getAvailableServices()));
+
+        if (! $isServiceValid) {
+            throw new ServiceIsNotValidException('The service is not Valid! check your service config file.');
+        }
+    }
+
+    //TODO DELETE
+
     private function returnDataResponse(): JsonResponse
     {
         $data = [
-            'schema' => json_decode($this->schema, true),
-            'examples' => $this->response['examples'] ?? [],
+            'schema' => $this->schema ? json_decode($this->schema, true) : null,
+            'examples' => $this->response ? ($this->response['examples'] ?? []) : [],
         ];
 
         $data = $this->generateResponseData($data);
@@ -97,15 +129,6 @@ class MocksController extends Controller
         }
 
         return jsonResponse($example, $this->responseStatusCode);
-    }
-
-    private function returnResponseByEnvelope(array $responseBody): JsonResponse
-    {
-        if ($this->envelope != 'null') {
-            $responseBody = [$this->envelope => $responseBody];
-        }
-
-        return jsonResponse($responseBody, $this->responseStatusCode);
     }
 
     private function overWriteExampleResponse($example): array

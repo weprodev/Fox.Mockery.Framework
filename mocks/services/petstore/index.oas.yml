@@ -53,6 +53,13 @@ paths:
             operationId: createPets
             tags:
                 - pet
+            requestBody:
+                description: 'Create a pet record'
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/PetRequest'
             responses:
                 '201':
                     description: 'Null response'
@@ -112,6 +119,18 @@ components:
                     type: integer
                     format: int64
                     example: 1
+                name:
+                    type: string
+                    example: Lucy
+                tag:
+                    type: string
+                    example: Persian
+        PetRequest:
+            type: object
+            additionalProperties: false
+            required:
+                - name
+            properties:
                 name:
                     type: string
                     example: Lucy

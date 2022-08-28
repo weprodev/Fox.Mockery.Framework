@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Exceptions\GetServiceRouteException;
-//use Illuminate\Http\Response;
 use App\Exceptions\ReferencePathException;
+use App\Exceptions\ValidationException;
 use Illuminate\Support\Facades\File;
+use Opis\JsonSchema\Helper;
+use Opis\JsonSchema\Validator;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 final class MocksHelper
@@ -64,6 +66,13 @@ final class MocksHelper
     public static function getBaseDirectory(): string
     {
         return rtrim(config('fox_settings.base_directory', '/'), '/');
+    }
+
+    public static function headerRequestAcceptContent(): string
+    {
+        $acceptRequest = request()->header('Accept') ?? request()->header('ACCEPT');
+
+        return ! is_null($acceptRequest) && $acceptRequest != '' ? $acceptRequest : 'application/json';
     }
 
     public static function headerRequestResponseType(): string
@@ -204,7 +213,28 @@ final class MocksHelper
 
         $dataResponse = $dataResponse[$responseStatusCode];
 
-        return $dataResponse['content']['application/json'] ?? [];
+        $acceptContentRequest = MocksHelper::headerRequestAcceptContent();
+
+        return $dataResponse['content'][$acceptContentRequest] ?? [];
+    }
+
+    /**
+     * @throws GetServiceRouteException
+     * @throws ReferencePathException
+     */
+    public static function getRequestBodySchemaContent(): array
+    {
+        $acceptContentRequest = MocksHelper::headerRequestAcceptContent();
+        $requestServiceContent = MocksHelper::getDataPathContent();
+        $requestServiceContent = self::normalizeReferenceContentInNestedArray($requestServiceContent);
+
+        if (isset($requestServiceContent['requestBody']) &&
+            isset($requestServiceContent['requestBody']['content'])) {
+
+            return $requestServiceContent['requestBody']['content'][$acceptContentRequest]['schema'] ?? [];
+        }
+
+        return [];
     }
 
     public static function returnResponseBodyWithEnvelope(array $responseDataBody): array
@@ -217,20 +247,31 @@ final class MocksHelper
         return $responseDataBody;
     }
 
+    /**
+     * @throws GetServiceRouteException
+     * @throws ReferencePathException
+     * @throws ValidationException
+     */
     public static function submitDataValidation(): void
     {
+        $method = strtoupper(MocksHelper::requestMethod());
 
-//        $requestSchemaContent = MocksHelper::getServiceContent(MocksHelper::getServiceName());
+        if (in_array($method, ['GET', 'DELETE'])) {
+            return;
+        }
 
-//        $validator = new Validator;
-//        $result = $validator->validate(Helper::toJSON($this->getAllBodyRequests()), $requestBodyContentSchema);
-//
-//        if ($result->isValid()) {
-//            return true;
-//        }
-//
-//        if ($result->hasError()) {
-//            throw new ValidationException($result->error()->message(), $result->error());
-//        }
+        $requestBodyContentSchema = MocksHelper::getRequestBodySchemaContent();
+
+        $validator = new Validator;
+        $result = $validator->validate(Helper::toJSON(request()->all()), json_encode($requestBodyContentSchema));
+
+        if ($result->isValid()) {
+            return;
+        }
+
+        if ($result->hasError()) {
+            throw new ValidationException($result->error()->message(), $result->error());
+        }
+
     }
 }
