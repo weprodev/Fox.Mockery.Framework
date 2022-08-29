@@ -212,14 +212,12 @@ final class OpenApiSpecBuilder
 
                             $examples = $statusCodeContent['content']['application/json']['examples'];
                             // DELETE THE CURRENT VALUES
-                            $arrayPathsContent[$index][$methodIndex]['responses'][$statusCodeIndex]
-                            ['content']['application/json']['examples'] = [];
+                            $arrayPathsContent[$index][$methodIndex]['responses'][$statusCodeIndex]['content']['application/json']['examples'] = [];
 
                             foreach ($examples as $intIndex => $example) {
                                 $wordIndex = convertNumberToWord($intIndex);
 
-                                $arrayPathsContent[$index][$methodIndex]['responses'][$statusCodeIndex]
-                                ['content']['application/json']['examples'][$wordIndex]['value'] = $example;
+                                $arrayPathsContent[$index][$methodIndex]['responses'][$statusCodeIndex]['content']['application/json']['examples'][$wordIndex]['value'] = $example;
                             }
 
                         }

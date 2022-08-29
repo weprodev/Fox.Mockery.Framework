@@ -96,7 +96,7 @@ final class MockDataResponse
             return MocksHelper::returnResponseBodyWithEnvelope($this->example);
         }
 
-        return $this->schema;
+        return $this->example;
     }
 
     public function getOverwriteExample(): array
@@ -120,7 +120,7 @@ final class MockDataResponse
 
     private function setResponseBodyContent(): void
     {
-        $this->responseBodyContent = $this->mockDataRequest->toArray()['responseBodyContent'];
+        $this->responseBodyContent = $this->mockDataRequest->toArray()['responseBodyContent'] ?? [];
     }
 
     private function setPathContent(): void
@@ -135,7 +135,20 @@ final class MockDataResponse
 
     private function setExample(): void
     {
-        $this->example = $this->mockDataRequest->toArray()['example'] ?? [];
+        $responseBodyContent = $this->getResponseBodyContent();
+
+        if (isset($responseBodyContent['examples'])) {
+            $examples = [];
+            foreach ($responseBodyContent['examples'] as $index => $exampleItem) {
+                $examples[] = $exampleItem['value'];
+            }
+
+            $this->example = ! empty($examples) ? $examples[array_rand($examples)] : [];
+
+            return;
+        }
+
+        $this->example = $responseBodyContent['example'] ?? [];
     }
 
     public function setResponseHeader(): void
