@@ -105,7 +105,7 @@ final class MockDataResponse
             return MocksHelper::returnResponseBodyWithEnvelope($this->example);
         }
 
-        return $this->schema;
+        return $this->example;
     }
 
     public function getResponseStatusCode(): int
@@ -135,20 +135,7 @@ final class MockDataResponse
 
     private function setExample(): void
     {
-        $responseBodyContent = $this->getResponseBodyContent();
-
-        if (isset($responseBodyContent['examples'])) {
-            $examples = [];
-            foreach ($responseBodyContent['examples'] as $index => $exampleItem) {
-                $examples[] = $exampleItem['value'];
-            }
-
-            $this->example = ! empty($examples) ? $examples[array_rand($examples)] : [];
-
-            return;
-        }
-
-        $this->example = $responseBodyContent['example'] ?? [];
+        $this->example = $this->mockDataRequest->toArray()['example'] ?? [];
     }
 
     public function setResponseHeader(): void

@@ -12,7 +12,7 @@ final class MockeryResponse
 
     private array $schema;
 
-    private array $examples;
+    private array $example;
 
     public function getResponseBodyContent(): array
     {
@@ -46,12 +46,12 @@ final class MockeryResponse
 
     public function setExample(array $exampleContent): void
     {
-        $this->examples = $exampleContent;
+        $this->example = $exampleContent;
     }
 
     public function getExample(): array
     {
-        return $this->examples ?? [];
+        return $this->example ?? [];
     }
 
     public function getAllDataAsAnArray(): array
@@ -59,7 +59,7 @@ final class MockeryResponse
         $data['pathContent'] = $this->getPathContent();
         $data['responseBodyContent'] = $this->getResponseBodyContent();
         $data['schema'] = $this->getSchema();
-        $data['examples'] = $this->getExample();
+        $data['example'] = $this->getExample();
 
         return $data;
     }

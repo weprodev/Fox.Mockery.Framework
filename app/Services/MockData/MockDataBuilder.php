@@ -42,9 +42,26 @@ final class MockDataBuilder
         return $this;
     }
 
+    /**
+     * @throws \App\Exceptions\GetServiceRouteException
+     */
     public function withExample(): self
     {
-        //TODO prepare example
+        $getResponseBody = MocksHelper::getResponseBodyData();
+        if (isset($getResponseBody['examples']) && !empty($getResponseBody['examples'])) {
+
+            $examples = [];
+            foreach ($getResponseBody['examples'] as $index => $exampleItem) {
+                $examples[] = $exampleItem['value'];
+            }
+
+            $this->mockeryResponse->setExample($examples[array_rand($examples)]);
+
+        }elseif(isset($getResponseBody['example'])){
+
+            $this->mockeryResponse->setExample($getResponseBody['example']);
+        }
+
         return $this;
     }
 
