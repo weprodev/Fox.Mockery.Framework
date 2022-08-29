@@ -33,7 +33,19 @@
                         "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/Pets"
-                            }
+                            },
+                            "example": [
+                                {
+                                    "id": 1,
+                                    "name": "Fay",
+                                    "tag": "lovely"
+                                },
+                                {
+                                    "id": 1,
+                                    "name": "Lucy",
+                                    "tag": "Persian"
+                                }
+                            ]
                         }
                     }
                 },
@@ -69,6 +81,25 @@
             "responses": {
                 "201": {
                     "description": "Null response"
+                },
+                "200": {
+                    "description": "Null response",
+                    "content": {
+                        "application/json": {
+                            "examples": [
+                                {
+                                    "id": 1,
+                                    "name": "Fay",
+                                    "tag": "lovely"
+                                },
+                                {
+                                    "id": 2,
+                                    "name": "Buddy",
+                                    "tag": "Golden"
+                                }
+                            ]
+                        }
+                    }
                 },
                 "default": {
                     "description": "unexpected error",

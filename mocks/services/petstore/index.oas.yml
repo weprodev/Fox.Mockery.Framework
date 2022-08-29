@@ -42,6 +42,15 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Pets'
+                            example:
+                                -
+                                    id: 1
+                                    name: Fay
+                                    tag: lovely
+                                -
+                                    id: 1
+                                    name: Lucy
+                                    tag: Persian
                 default:
                     description: 'unexpected error'
                     content:
@@ -63,6 +72,21 @@ paths:
             responses:
                 '201':
                     description: 'Null response'
+                '200':
+                    description: 'Null response'
+                    content:
+                        application/json:
+                            examples:
+                                zero:
+                                    value:
+                                        id: 1
+                                        name: Fay
+                                        tag: lovely
+                                one:
+                                    value:
+                                        id: 2
+                                        name: Buddy
+                                        tag: Golden
                 default:
                     description: 'unexpected error'
                     content:

@@ -71,8 +71,8 @@ final class MocksHelper
     public static function headerRequestAcceptContent(): string
     {
         $acceptRequest = request()->header('Accept') ?? request()->header('ACCEPT');
-        
-        return ! is_null($acceptRequest) && !in_array($acceptRequest, ['', '*/*']) ? $acceptRequest : 'application/json';
+
+        return ! is_null($acceptRequest) && ! in_array($acceptRequest, ['', '*/*']) ? $acceptRequest : 'application/json';
     }
 
     public static function headerRequestResponseType(): string

@@ -76,8 +76,8 @@ final class OpenApiSpecBuilder
         }
 
         $jsonPathsContent = mergingJsonFilesInDirectory($pathDirectory);
-
-        $this->openApiSpec->setPaths(json_decode($jsonPathsContent, true));
+        $normalizedPathsContent = $this->normalizeExamplesInPathsContent($jsonPathsContent);
+        $this->openApiSpec->setPaths($normalizedPathsContent);
 
         return $this;
     }
@@ -192,5 +192,46 @@ final class OpenApiSpecBuilder
     public function getServiceName(): string
     {
         return $this->serviceName;
+    }
+
+    private function normalizeExamplesInPathsContent(string $jsonPathsContent): array
+    {
+        $arrayPathsContent = json_decode($jsonPathsContent, true);
+
+        foreach ($arrayPathsContent as $index => $pathMethodsContent) {
+
+            foreach ($pathMethodsContent as $methodIndex => $pathMethodContent) {
+
+                if (isset($pathMethodContent['responses']) && ! empty($pathMethodContent['responses'])) {
+
+                    foreach ($pathMethodContent['responses'] as $statusCodeIndex => $statusCodeContent) {
+
+                        if (isset($statusCodeContent['content']) &&
+                            isset($statusCodeContent['content']['application/json']) &&
+                            isset($statusCodeContent['content']['application/json']['examples'])) {
+
+                            $examples = $statusCodeContent['content']['application/json']['examples'];
+                            // DELETE THE CURRENT VALUES
+                            $arrayPathsContent[$index][$methodIndex]['responses'][$statusCodeIndex]
+                            ['content']['application/json']['examples'] = [];
+
+                            foreach ($examples as $intIndex => $example) {
+                                $wordIndex = convertNumberToWord($intIndex);
+
+                                $arrayPathsContent[$index][$methodIndex]['responses'][$statusCodeIndex]
+                                ['content']['application/json']['examples'][$wordIndex]['value'] = $example;
+                            }
+
+                        }
+
+                    }// foreach
+
+                }// if
+
+            }// foreach
+
+        }// foreach
+
+        return $arrayPathsContent;
     }
 }
