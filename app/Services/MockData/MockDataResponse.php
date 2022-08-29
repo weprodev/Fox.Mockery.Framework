@@ -101,11 +101,13 @@ final class MockDataResponse
 
     public function getOverwriteExample(): array
     {
+        $overWriteExample = MocksHelper::overWriteExampleResponse($this->example);
+
         if ($this->envelope) {
-            return MocksHelper::returnResponseBodyWithEnvelope($this->example);
+            return MocksHelper::returnResponseBodyWithEnvelope($overWriteExample);
         }
 
-        return $this->example;
+        return $overWriteExample;
     }
 
     public function getResponseStatusCode(): int

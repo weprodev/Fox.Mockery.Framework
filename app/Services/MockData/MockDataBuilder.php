@@ -48,7 +48,7 @@ final class MockDataBuilder
     public function withExample(): self
     {
         $getResponseBody = MocksHelper::getResponseBodyData();
-        if (isset($getResponseBody['examples']) && !empty($getResponseBody['examples'])) {
+        if (isset($getResponseBody['examples']) && ! empty($getResponseBody['examples'])) {
 
             $examples = [];
             foreach ($getResponseBody['examples'] as $index => $exampleItem) {
@@ -57,7 +57,7 @@ final class MockDataBuilder
 
             $this->mockeryResponse->setExample($examples[array_rand($examples)]);
 
-        }elseif(isset($getResponseBody['example'])){
+        }elseif(isset($getResponseBody['example'])) {
 
             $this->mockeryResponse->setExample($getResponseBody['example']);
         }

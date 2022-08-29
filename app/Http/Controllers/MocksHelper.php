@@ -274,4 +274,28 @@ final class MocksHelper
         }
 
     }
+
+    public static function overWriteExampleResponse($example): array
+    {
+
+        if (isset($example[0])) {
+
+            foreach (request()->all() as $key => $value) {
+                $value = explode(',', request($key));
+
+                foreach ($value as $index => $replacement) {
+
+                    if (isset($example[$index]) && trim($replacement) != '') {
+                        $example[$index][$key] = trim($replacement);
+                    }
+                }
+
+            }
+
+            return $example;
+        }
+
+        return array_merge($example, request()->all());
+    }
+    
 }

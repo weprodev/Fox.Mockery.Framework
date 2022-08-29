@@ -70,7 +70,7 @@ final class MocksController extends Controller
         return $this->index();
     }
 
-    public function serviceDocumentation(Request $request, $service_name)
+    public function serviceDocumentation(Request $request, string $service_name)
     {
         $docs = MocksHelper::getServiceContent($service_name);
 
@@ -93,89 +93,4 @@ final class MocksController extends Controller
         }
     }
 
-    //TODO DELETE
-
-    private function returnDataResponse(): JsonResponse
-    {
-        $data = [
-            'schema' => $this->schema ? json_decode($this->schema, true) : null,
-            'examples' => $this->response ? ($this->response['examples'] ?? []) : [],
-        ];
-
-        $data = $this->generateResponseData($data);
-
-        if ($this->envelope) {
-            return $this->returnResponseByEnvelope($data);
-        }
-
-        return jsonResponse($data, $this->responseStatusCode);
-    }
-
-    private function returnExampleResponse(): JsonResponse
-    {
-        $examples = $this->response['examples'] ?? [];
-
-        if (empty($examples)) {
-            return $this->returnDataResponse();
-        }
-
-        $example = end($examples);
-        if ($this->overwrite) {
-            $example = $this->overWriteExampleResponse($example);
-        }
-
-        if ($this->envelope) {
-            return $this->returnResponseByEnvelope($example);
-        }
-
-        return jsonResponse($example, $this->responseStatusCode);
-    }
-
-    private function overWriteExampleResponse($example): array
-    {
-        if (isset($example[0])) {
-
-            foreach (request()->all() as $key => $value) {
-                $value = explode(',', request('primary_color'));
-
-                foreach ($value as $index => $replacement) {
-
-                    if (isset($example[$index]) && trim($replacement) != '') {
-                        $example[$index][$key] = trim($replacement);
-                    }
-                }
-
-            }
-
-            return $example;
-        }
-
-        return array_merge($example, request()->all());
-    }
-
-    private function generateResponseData(array $data): array
-    {
-
-        if (isset($this->response['response'])) {
-            return $this->response['response'];
-        }
-
-        if (config('fox_settings.response.status')) {
-
-            $examples = $this->response['examples'] ?? [];
-
-            $response = match (strtoupper(config('fox_settings.response.type'))) {
-                'EXAMPLE' => empty($examples) ? [] : end($examples),
-                'EXAMPLE_AND_OVERWRITE' => $this->overWriteExampleResponse((empty($examples) ? [] : end($examples))),
-                'SCHEMA' => json_decode($this->schema, true),
-                default => null,
-            };
-
-            if ($response) {
-                $data['response'] = $response;
-            }
-        }
-
-        return $data;
-    }
 }
