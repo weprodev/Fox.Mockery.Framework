@@ -65,6 +65,115 @@ interact with the remote service with a minimal amount of implementation logic.
 An OpenAPI definition can then be used by documentation generation tools to display the API, code generation tools to
 generate servers and clients in various programming languages, testing tools, and many other use cases.
 
+
+## Path Structure Example
+if you create a path json file, you can use below examples to add the contents:
+```
+{
+  "/example/path": {
+    "get": {
+      "summary": "",
+      "operationId": "",
+      "tags": [
+        ""
+      ],
+      "parameters": [
+        {
+          "name": "",
+          "in": "", // "query", "header", "path" or "cookie"
+          "description": "",
+          "required": false,
+          "schema": {
+            "type": ""
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "",
+          "headers": {
+            "x-next": {
+              "description": "",
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/..."
+              },
+              "example": [
+                {}
+              ]
+            }
+          }
+        },
+        "default": {
+          "description": "unexpected error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/..."
+              },
+              "example": {}
+            }
+          }
+        }
+      }
+    },
+    "post": {
+      "summary": "",
+      "operationId": "",
+      "tags": [
+        ""
+      ],
+      "requestBody": {
+        "description": "",
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/..."
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "examples": [
+                {
+                  "id": 1,
+                  "name": "",
+                  "tag": ""
+                }
+              ]
+            }
+          }
+        },
+        "201": {
+          "description": "Null response"
+        },
+        "default": {
+          "description": "unexpected error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Error"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
 ## License
 
 The Fox Mockery is an open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
