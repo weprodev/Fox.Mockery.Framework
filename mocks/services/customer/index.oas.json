@@ -68,6 +68,7 @@
                 ],
                 "responses": {
                     "200": {
+                        "description": "List all beers in system.",
                         "content": {
                             "application\/json": {
                                 "schema": {
@@ -108,7 +109,7 @@
                                 "schema": {
                                     "type": "string",
                                     "format": "uri",
-                                    "example": "http:\/\/example.com\/v1\/beers\/{assignedIdValue}"
+                                    "example": "http:\/\/example.com\/v1\/beers\/assignedIdValue"
                                 }
                             }
                         }
@@ -135,7 +136,7 @@
                         "name": "beerId",
                         "in": "path",
                         "description": "Beer Id",
-                        "required": false,
+                        "required": true,
                         "style": "simple",
                         "explode": false,
                         "schema": {
@@ -172,7 +173,7 @@
                         "name": "beerId",
                         "in": "path",
                         "description": "Beer Id",
-                        "required": false,
+                        "required": true,
                         "style": "simple",
                         "explode": false,
                         "schema": {
@@ -315,7 +316,7 @@
                                 "schema": {
                                     "type": "string",
                                     "format": "uri",
-                                    "example": "http:\/\/example.com\/v1\/customers\/{assignedIdValue}"
+                                    "example": "http:\/\/example.com\/v1\/customers\/assignedIdValue"
                                 }
                             }
                         }
@@ -341,16 +342,6 @@
                     },
                     "409": {
                         "description": "description: Conflict"
-                    },
-                    "default": {
-                        "description": "unexpected error",
-                        "content": {
-                            "application\/json": {
-                                "schema": {
-                                    "$ref": "#\/components\/schemas\/Error"
-                                }
-                            }
-                        }
                     }
                 }
             }
@@ -397,18 +388,20 @@
             "put": {
                 "summary": "Update Customer",
                 "description": "Update customer by id.",
-                "parameters": {
-                    "name": "customerId",
-                    "in": "path",
-                    "description": "Customer Id",
-                    "required": true,
-                    "style": "simple",
-                    "explode": false,
-                    "schema": {
-                        "type": "string",
-                        "format": "uuid"
+                "parameters": [
+                    {
+                        "name": "customerId",
+                        "in": "path",
+                        "description": "Customer Id",
+                        "required": true,
+                        "style": "simple",
+                        "explode": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
                     }
-                },
+                ],
                 "tags": [
                     "Customers"
                 ],
@@ -441,18 +434,20 @@
                 "summary": "Delete Customer By ID",
                 "description": "Delete a customer by its Id value.",
                 "operationId": "deleteCustomerV1",
-                "parameters": {
-                    "name": "customerId",
-                    "in": "path",
-                    "description": "Customer Id",
-                    "required": true,
-                    "style": "simple",
-                    "explode": false,
-                    "schema": {
-                        "type": "string",
-                        "format": "uuid"
+                "parameters": [
+                    {
+                        "name": "customerId",
+                        "in": "path",
+                        "description": "Customer Id",
+                        "required": true,
+                        "style": "simple",
+                        "explode": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
                     }
-                },
+                ],
                 "responses": {
                     "200": {
                         "description": "Customer Delete"

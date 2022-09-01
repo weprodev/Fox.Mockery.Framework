@@ -92,5 +92,4 @@ final class MocksController extends Controller
             throw new ServiceIsNotValidException('The service is not Valid! check your service config file.');
         }
     }
-
 }

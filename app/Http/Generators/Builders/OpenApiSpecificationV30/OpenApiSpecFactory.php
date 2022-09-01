@@ -53,5 +53,18 @@ final class OpenApiSpecFactory
 
         $ymlDestinationPath = str_replace('.json', '.yml', $jsonDestinationPath);
         Artisan::call("convert:files $jsonDestinationPath $ymlDestinationPath");
+
+        $this->normalizeYamlFileAccordingToOpenApiSpecValidationRules($ymlDestinationPath);
+    }
+
+    private function normalizeYamlFileAccordingToOpenApiSpecValidationRules($ymlDestinationPath)
+    {
+        $loadYamlContent = $this->filesystem->get($ymlDestinationPath);
+        $loadYamlContent = str_replace('{}', '[]', $loadYamlContent);
+        $loadYamlContent = str_replace('{ }', '[]', $loadYamlContent);
+        $loadYamlContent = str_replace('{  }', '[]', $loadYamlContent);
+        $loadYamlContent = str_replace('example: []', 'example: {}', $loadYamlContent);
+
+        $this->filesystem->put($ymlDestinationPath, $loadYamlContent);
     }
 }

@@ -54,6 +54,7 @@ paths:
                         default: 25
             responses:
                 '200':
+                    description: 'List all beers in system.'
                     content:
                         application/json:
                             schema:
@@ -82,7 +83,7 @@ paths:
                             schema:
                                 type: string
                                 format: uri
-                                example: 'http://example.com/v1/beers/{assignedIdValue}'
+                                example: 'http://example.com/v1/beers/assignedIdValue'
                 '400':
                     description: 'Bad Request'
                 '409':
@@ -99,7 +100,7 @@ paths:
                     name: beerId
                     in: path
                     description: 'Beer Id'
-                    required: false
+                    required: true
                     style: simple
                     explode: false
                     schema:
@@ -125,7 +126,7 @@ paths:
                     name: beerId
                     in: path
                     description: 'Beer Id'
-                    required: false
+                    required: true
                     style: simple
                     explode: false
                     schema:
@@ -205,8 +206,8 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/CustomerPagedList'
-                            example: {  }
-            security: {  }
+                            example: {}
+            security: []
         post:
             summary: 'New Customer'
             description: 'Create a new customer'
@@ -229,7 +230,7 @@ paths:
                             schema:
                                 type: string
                                 format: uri
-                                example: 'http://example.com/v1/customers/{assignedIdValue}'
+                                example: 'http://example.com/v1/customers/assignedIdValue'
                 '200':
                     description: ''
                     content:
@@ -244,12 +245,6 @@ paths:
                     description: 'Bad Request'
                 '409':
                     description: 'description: Conflict'
-                default:
-                    description: 'unexpected error'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Error'
     '/customer/v1/customers/{customerId}':
         get:
             summary: 'Get Customer By ID'
@@ -277,20 +272,21 @@ paths:
                                 $ref: '#/components/schemas/Customer'
                 '404':
                     description: 'Not found'
-            security: {  }
+            security: []
         put:
             summary: 'Update Customer'
             description: 'Update customer by id.'
             parameters:
-                name: customerId
-                in: path
-                description: 'Customer Id'
-                required: true
-                style: simple
-                explode: false
-                schema:
-                    type: string
-                    format: uuid
+                -
+                    name: customerId
+                    in: path
+                    description: 'Customer Id'
+                    required: true
+                    style: simple
+                    explode: false
+                    schema:
+                        type: string
+                        format: uuid
             tags:
                 - Customers
             requestBody:
@@ -313,15 +309,16 @@ paths:
             description: 'Delete a customer by its Id value.'
             operationId: deleteCustomerV1
             parameters:
-                name: customerId
-                in: path
-                description: 'Customer Id'
-                required: true
-                style: simple
-                explode: false
-                schema:
-                    type: string
-                    format: uuid
+                -
+                    name: customerId
+                    in: path
+                    description: 'Customer Id'
+                    required: true
+                    style: simple
+                    explode: false
+                    schema:
+                        type: string
+                        format: uuid
             responses:
                 '200':
                     description: 'Customer Delete'
@@ -644,9 +641,9 @@ components:
             bearerFormat: JWT
 security:
     -
-        BasicAuth: {  }
+        BasicAuth: []
     -
-        JwtAuthToken: {  }
+        JwtAuthToken: []
 tags:
     -
         name: Customers

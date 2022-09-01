@@ -297,5 +297,4 @@ final class MocksHelper
 
         return array_merge($example, request()->all());
     }
-    
 }
