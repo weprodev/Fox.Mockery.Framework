@@ -144,7 +144,7 @@ final class MockDataResponse
     {
         $this->responseHeader = [
             'X-ENVELOPE-RESPONSE' => $this->envelope ?? 'NULL',
-            'X-OVERWRITE-CONTENT' => $this->overwriteContent ? 'TRUE' : 'FALSE',
+            //            'X-OVERWRITE-CONTENT' => $this->overwriteContent ? 'TRUE' : 'FALSE',
             'X-STATUS-CODE' => (string) $this->getResponseStatusCode(),
             'X-RESPONSE-TYPE' => strtoupper($this->responseType).
                 ' |  VALID_TYPES: '.implode(', ', $this->getValidResponseTypes()),

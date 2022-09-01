@@ -93,7 +93,7 @@ class JsonYmlConvertCommand extends Command
     private function normalizeDataAfterConvert($content): string
     {
         foreach ($this->getAvailableStatusCodes() as $statusCode) {
-            $content = str_replace($statusCode, "'".$statusCode."'", $content);
+            $content = str_replace($statusCode.':', "'".$statusCode."':", $content);
         }
 
         return $content;
