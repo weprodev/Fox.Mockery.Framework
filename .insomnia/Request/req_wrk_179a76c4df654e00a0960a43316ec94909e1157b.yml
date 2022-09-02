@@ -1,0 +1,253 @@
+_id: req_wrk_179a76c4df654e00a0960a43316ec94909e1157b
+type: Request
+parentId: fld_wrk_179a76c4df654e00a0960a43316ec9491b034c38
+modified: 1662151252289
+created: 1662150933437
+url: "{{ base_url }}/petstore/pets"
+name: Create a pet
+description: >-
+  
+  # Default Response 
+
+  ```
+
+  {
+  	"summary": "Create a pet",
+  	"operationId": "createPets",
+  	"tags": [
+  		"pet"
+  	],
+  	"parameters": [
+  		{
+  			"name": "X-RESPONSE-TYPE",
+  			"in": "header",
+  			"description": "With this parameter, we can handle the response message, according to our requirement.",
+  			"required": false,
+  			"style": "simple",
+  			"allowEmptyValue": false,
+  			"schema": {
+  				"type": "string",
+  				"enum": [
+  					"EXAMPLE",
+  					"EXAMPLE_AND_OVERWRITE",
+  					"SCHEMA",
+  					"BODY",
+  					"ALL"
+  				],
+  				"default": "ALL"
+  			}
+  		},
+  		{
+  			"name": "X-ENVELOPE-RESPONSE",
+  			"in": "header",
+  			"description": "With this parameter, we can ENVELOPE the response message in a specific key.",
+  			"required": false,
+  			"style": "simple",
+  			"allowEmptyValue": false,
+  			"schema": {
+  				"type": "string",
+  				"default": "data"
+  			}
+  		},
+  		{
+  			"name": "X-STATUS-CODE",
+  			"in": "header",
+  			"description": "With this parameter, we can handle the response message, according to the status code which we want.",
+  			"required": false,
+  			"style": "simple",
+  			"allowEmptyValue": false,
+  			"schema": {
+  				"type": "integer",
+  				"default": 200,
+  				"enum": [
+  					200,
+  					201,
+  					204,
+  					400,
+  					401,
+  					404,
+  					409,
+  					500,
+  					503
+  				]
+  			}
+  		},
+  		{
+  			"name": "Content-Type",
+  			"in": "header",
+  			"description": "Setting the Content-Type to Json",
+  			"required": true,
+  			"style": "simple",
+  			"allowEmptyValue": false,
+  			"schema": {
+  				"type": "string",
+  				"default": "application\/json"
+  			}
+  		}
+  	],
+  	"requestBody": {
+  		"description": "Create a pet record",
+  		"required": true,
+  		"content": {
+  			"application\/json": {
+  				"schema": {
+  					"type": "object",
+  					"additionalProperties": false,
+  					"required": [
+  						"name"
+  					],
+  					"properties": {
+  						"name": {
+  							"type": "string",
+  							"example": "Lucy"
+  						},
+  						"tag": {
+  							"type": "string",
+  							"example": "Persian"
+  						}
+  					}
+  				}
+  			}
+  		}
+  	},
+  	"responses": {
+  		"201": {
+  			"description": "Null response"
+  		},
+  		"200": {
+  			"description": "Null response",
+  			"content": {
+  				"application\/json": {
+  					"examples": {
+  						"zero": {
+  							"value": {
+  								"id": 1,
+  								"name": "Fay",
+  								"tag": "lovely"
+  							}
+  						},
+  						"one": {
+  							"value": {
+  								"id": 2,
+  								"name": "Buddy",
+  								"tag": "Golden"
+  							}
+  						}
+  					}
+  				}
+  			}
+  		},
+  		"default": {
+  			"description": "unexpected error",
+  			"content": {
+  				"application\/json": {
+  					"schema": {
+  						"type": "object",
+  						"required": [
+  							"code",
+  							"message"
+  						],
+  						"properties": {
+  							"code": {
+  								"type": "integer",
+  								"format": "int32"
+  							},
+  							"message": {
+  								"type": "string"
+  							}
+  						}
+  					}
+  				}
+  			}
+  		}
+  	}
+  }
+
+  ```
+
+
+
+  # Validation Exception
+
+  ```
+
+  {
+  	"message": "The data ({type}) must match the type: {expected}",
+  	"errors": {
+  		"schema": {
+  			"id": "schema:\/\/\/00000000000001bd0000000000000000.json#",
+  			"base": null,
+  			"root": null,
+  			"draft": "2020-12",
+  			"path": "#",
+  			"contents": {
+  				"type": "object",
+  				"additionalProperties": false,
+  				"required": [
+  					"name"
+  				],
+  				"properties": {
+  					"name": {
+  						"type": "string",
+  						"example": "Lucy"
+  					},
+  					"tag": {
+  						"type": "string",
+  						"example": "Persian"
+  					}
+  				}
+  			}
+  		},
+  		"error": {
+  			"keyword": "type",
+  			"args": {
+  				"expected": "object",
+  				"type": "array"
+  			},
+  			"message": "The data ({type}) must match the type: {expected}",
+  			"formattedMessage": "The data (array) must match the type: object"
+  		},
+  		"data": {
+  			"type": "array",
+  			"value": [],
+  			"fullPath": []
+  		}
+  	}
+  }
+
+  ```
+method: POST
+body:
+  mimeType: application/json
+  text: |-
+    {
+      "name": "Lucy",
+      "tag": "Persian"
+    }
+parameters: []
+headers:
+  - name: X-RESPONSE-TYPE
+    disabled: false
+    value: Example
+    id: pair_4b25b02c3ad7465689d6d0dae52fa196
+  - name: X-ENVELOPE-RESPONSE
+    disabled: true
+    value: data
+    id: pair_1df32d4c80f24cd2a870d8f668ce1de4
+  - name: X-STATUS-CODE
+    disabled: true
+    value: "200"
+    id: pair_1745926b16424992a5327cadb8eaa9da
+  - name: Content-Type
+    disabled: false
+    value: application/json
+    id: pair_f940bad0ec8d4d6ea3c6920d9bd9aaff
+authentication: {}
+metaSortKey: -1662150933437
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

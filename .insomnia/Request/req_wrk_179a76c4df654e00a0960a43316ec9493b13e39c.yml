@@ -1,0 +1,72 @@
+_id: req_wrk_179a76c4df654e00a0960a43316ec9493b13e39c
+type: Request
+parentId: fld_wrk_179a76c4df654e00a0960a43316ec9491b034c38
+modified: 1662151248176
+created: 1662150933435
+url: "{{ base_url }}/petstore/pets/{{ petId }}"
+name: Info for a specific pet
+description: |-
+  
+  ## Example
+
+
+  #### Headers
+  ```
+  X-RESPONSE-TYPE: Schema
+  X-ENVELOPE-RESPONSE: data
+
+  ```
+
+  #### Response
+
+  ```
+  {
+  	"data": {
+  		"type": "object",
+  		"required": [
+  			"id",
+  			"name"
+  		],
+  		"properties": {
+  			"id": {
+  				"type": "integer",
+  				"format": "int64",
+  				"example": 1
+  			},
+  			"name": {
+  				"type": "string",
+  				"example": "Lucy"
+  			},
+  			"tag": {
+  				"type": "string",
+  				"example": "Persian"
+  			}
+  		}
+  	}
+  }
+  ```
+method: GET
+body: {}
+parameters: []
+headers:
+  - name: X-RESPONSE-TYPE
+    disabled: false
+    value: Schema
+    id: pair_42e05990a80044009bff0a7e4e178565
+  - name: X-ENVELOPE-RESPONSE
+    disabled: false
+    value: data
+    id: pair_32f2a8a990d24f2aa70073f1a0ef735b
+  - name: X-STATUS-CODE
+    disabled: true
+    value: "200"
+    id: pair_6036fd35467f41b2abf0bbf52c34ae1e
+authentication: {}
+metaSortKey: -1662150933435
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global
