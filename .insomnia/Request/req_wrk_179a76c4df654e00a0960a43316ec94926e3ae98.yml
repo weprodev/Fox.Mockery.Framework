@@ -1,0 +1,185 @@
+_id: req_wrk_179a76c4df654e00a0960a43316ec94926e3ae98
+type: Request
+parentId: fld_wrk_179a76c4df654e00a0960a43316ec9491b034c38
+modified: 1662151361519
+created: 1662150933438
+url: "{{ base_url }}/petstore/pets"
+name: List all pets
+description: |-
+  # Example 1: Default Response 
+  ```
+  {
+  	"summary": "List all pets",
+  	"operationId": "listPets",
+  	"tags": [
+  		"pet"
+  	],
+  	"parameters": [
+  		{
+  			"name": "limit",
+  			"in": "query",
+  			"description": "How many items to return at one time (max 100)",
+  			"required": false,
+  			"schema": {
+  				"type": "integer",
+  				"format": "int32"
+  			}
+  		}
+  	],
+  	"responses": {
+  		"200": {
+  			"description": "A paged array of pets",
+  			"headers": {
+  				"x-next": {
+  					"description": "A link to the next page of responses",
+  					"schema": {
+  						"type": "string"
+  					}
+  				}
+  			},
+  			"content": {
+  				"application\/json": {
+  					"schema": {
+  						"type": "array",
+  						"items": {
+  							"type": "object",
+  							"required": [
+  								"id",
+  								"name"
+  							],
+  							"properties": {
+  								"id": {
+  									"type": "integer",
+  									"format": "int64",
+  									"example": 1
+  								},
+  								"name": {
+  									"type": "string",
+  									"example": "Lucy"
+  								},
+  								"tag": {
+  									"type": "string",
+  									"example": "Persian"
+  								}
+  							}
+  						}
+  					},
+  					"example": [
+  						{
+  							"id": 1,
+  							"name": "Fay",
+  							"tag": "lovely"
+  						},
+  						{
+  							"id": 1,
+  							"name": "Lucy",
+  							"tag": "Persian"
+  						}
+  					]
+  				}
+  			}
+  		},
+  		"default": {
+  			"description": "unexpected error",
+  			"content": {
+  				"application\/json": {
+  					"schema": {
+  						"type": "object",
+  						"required": [
+  							"code",
+  							"message"
+  						],
+  						"properties": {
+  							"code": {
+  								"type": "integer",
+  								"format": "int32"
+  							},
+  							"message": {
+  								"type": "string"
+  							}
+  						}
+  					}
+  				}
+  			}
+  		}
+  	}
+  }
+  ```
+
+  # Example 2 
+
+  #### Headers
+  ```
+  X-RESPONSE-TYPE: Example
+  ```
+
+  #### Response
+  ```
+  [
+  	{
+  		"id": 1,
+  		"name": "Fay",
+  		"tag": "lovely"
+  	},
+  	{
+  		"id": 1,
+  		"name": "Lucy",
+  		"tag": "Persian"
+  	}
+  ]
+  ```
+
+  # Example 3
+
+  #### Headers
+  ```
+  X-RESPONSE-TYPE: Example 
+  X-ENVELOPE-RESPONSE: data
+  ```
+
+  #### Response
+  ```
+  {
+  	"data": [
+  		{
+  			"id": 1,
+  			"name": "Fay",
+  			"tag": "lovely"
+  		},
+  		{
+  			"id": 1,
+  			"name": "Lucy",
+  			"tag": "Persian"
+  		}
+  	]
+  }
+  ```
+method: GET
+body: {}
+parameters:
+  - name: limit
+    disabled: true
+    value: "0"
+    id: pair_2d429441d4db490882b43fb160465104
+headers:
+  - name: X-RESPONSE-TYPE
+    disabled: false
+    value: BODY
+    id: pair_5d5cdbd2ff7c4e4e8a78e5bc6bfc365f
+  - name: X-ENVELOPE-RESPONSE
+    disabled: true
+    value: data
+    id: pair_6b953c2ce5f04bc68e09496e678e5c42
+  - name: X-STATUS-CODE
+    disabled: true
+    value: "200"
+    id: pair_0accd0c72d7a40e7ac7bf21bf6838b17
+authentication: {}
+metaSortKey: -1662150933438
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global
