@@ -17,6 +17,18 @@
 						"type": "string",
 						"format": "uuid"
 					}
+				},
+				{
+					"$ref": "#/components/parameters/ResponseType"
+				},
+				{
+					"$ref": "#/components/parameters/EnvelopeResponse"
+				},
+				{
+					"$ref": "#/components/parameters/StatusCode"
+				},
+				{
+					"$ref": "#/components/parameters/JsonContentType"
 				}
 			],
 			"requestBody": {

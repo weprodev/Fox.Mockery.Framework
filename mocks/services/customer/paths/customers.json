@@ -125,6 +125,18 @@
 						"type": "string",
 						"format": "uuid"
 					}
+				},
+				{
+					"$ref": "#/components/parameters/ResponseType"
+				},
+				{
+					"$ref": "#/components/parameters/EnvelopeResponse"
+				},
+				{
+					"$ref": "#/components/parameters/StatusCode"
+				},
+				{
+					"$ref": "#/components/parameters/JsonContentType"
 				}
 			],
 			"responses": {
@@ -159,6 +171,18 @@
 						"type": "string",
 						"format": "uuid"
 					}
+				},
+				{
+					"$ref": "#/components/parameters/ResponseType"
+				},
+				{
+					"$ref": "#/components/parameters/EnvelopeResponse"
+				},
+				{
+					"$ref": "#/components/parameters/StatusCode"
+				},
+				{
+					"$ref": "#/components/parameters/JsonContentType"
 				}
 			],
 			"tags": [
@@ -205,6 +229,18 @@
 						"type": "string",
 						"format": "uuid"
 					}
+				},
+				{
+					"$ref": "#/components/parameters/ResponseType"
+				},
+				{
+					"$ref": "#/components/parameters/EnvelopeResponse"
+				},
+				{
+					"$ref": "#/components/parameters/StatusCode"
+				},
+				{
+					"$ref": "#/components/parameters/JsonContentType"
 				}
 			],
 			"responses": {

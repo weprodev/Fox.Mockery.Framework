@@ -33,6 +33,18 @@
 						"format": "int32",
 						"default": 25
 					}
+				},
+				{
+					"$ref": "#/components/parameters/ResponseType"
+				},
+				{
+					"$ref": "#/components/parameters/EnvelopeResponse"
+				},
+				{
+					"$ref": "#/components/parameters/StatusCode"
+				},
+				{
+					"$ref": "#/components/parameters/JsonContentType"
 				}
 			],
 			"responses": {
@@ -56,6 +68,20 @@
 			"description": "Create a new Beer Object",
 			"tags": [
 				"Beers"
+			],
+			"parameters": [
+				{
+					"$ref": "#/components/parameters/ResponseType"
+				},
+				{
+					"$ref": "#/components/parameters/EnvelopeResponse"
+				},
+				{
+					"$ref": "#/components/parameters/StatusCode"
+				},
+				{
+					"$ref": "#/components/parameters/JsonContentType"
+				}
 			],
 			"requestBody": {
 				"required": true,
@@ -112,6 +138,18 @@
 						"type": "string",
 						"format": "uuid"
 					}
+				},
+				{
+					"$ref": "#/components/parameters/ResponseType"
+				},
+				{
+					"$ref": "#/components/parameters/EnvelopeResponse"
+				},
+				{
+					"$ref": "#/components/parameters/StatusCode"
+				},
+				{
+					"$ref": "#/components/parameters/JsonContentType"
 				}
 			],
 			"responses": {
@@ -149,6 +187,18 @@
 						"type": "string",
 						"format": "uuid"
 					}
+				},
+				{
+					"$ref": "#/components/parameters/ResponseType"
+				},
+				{
+					"$ref": "#/components/parameters/EnvelopeResponse"
+				},
+				{
+					"$ref": "#/components/parameters/StatusCode"
+				},
+				{
+					"$ref": "#/components/parameters/JsonContentType"
 				}
 			],
 			"requestBody": {
@@ -195,6 +245,18 @@
 						"type": "string",
 						"format": "uuid"
 					}
+				},
+				{
+					"$ref": "#/components/parameters/ResponseType"
+				},
+				{
+					"$ref": "#/components/parameters/EnvelopeResponse"
+				},
+				{
+					"$ref": "#/components/parameters/StatusCode"
+				},
+				{
+					"$ref": "#/components/parameters/JsonContentType"
 				}
 			],
 			"responses": {

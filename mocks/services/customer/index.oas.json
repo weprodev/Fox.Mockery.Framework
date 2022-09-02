@@ -64,6 +64,18 @@
                             "format": "int32",
                             "default": 25
                         }
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/ResponseType"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/EnvelopeResponse"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/StatusCode"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/JsonContentType"
                     }
                 ],
                 "responses": {
@@ -87,6 +99,20 @@
                 "description": "Create a new Beer Object",
                 "tags": [
                     "Beers"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#\/components\/parameters\/ResponseType"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/EnvelopeResponse"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/StatusCode"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/JsonContentType"
+                    }
                 ],
                 "requestBody": {
                     "required": true,
@@ -143,6 +169,18 @@
                             "type": "string",
                             "format": "uuid"
                         }
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/ResponseType"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/EnvelopeResponse"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/StatusCode"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/JsonContentType"
                     }
                 ],
                 "responses": {
@@ -180,6 +218,18 @@
                             "type": "string",
                             "format": "uuid"
                         }
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/ResponseType"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/EnvelopeResponse"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/StatusCode"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/JsonContentType"
                     }
                 ],
                 "requestBody": {
@@ -226,6 +276,18 @@
                             "type": "string",
                             "format": "uuid"
                         }
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/ResponseType"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/EnvelopeResponse"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/StatusCode"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/JsonContentType"
                     }
                 ],
                 "responses": {
@@ -366,6 +428,18 @@
                             "type": "string",
                             "format": "uuid"
                         }
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/ResponseType"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/EnvelopeResponse"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/StatusCode"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/JsonContentType"
                     }
                 ],
                 "responses": {
@@ -400,6 +474,18 @@
                             "type": "string",
                             "format": "uuid"
                         }
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/ResponseType"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/EnvelopeResponse"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/StatusCode"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/JsonContentType"
                     }
                 ],
                 "tags": [
@@ -446,6 +532,18 @@
                             "type": "string",
                             "format": "uuid"
                         }
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/ResponseType"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/EnvelopeResponse"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/StatusCode"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/JsonContentType"
                     }
                 ],
                 "responses": {
@@ -476,6 +574,18 @@
                             "type": "string",
                             "format": "uuid"
                         }
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/ResponseType"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/EnvelopeResponse"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/StatusCode"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/JsonContentType"
                     }
                 ],
                 "requestBody": {
@@ -574,6 +684,30 @@
                     "format": "uuid"
                 }
             },
+            "EnvelopeResponse": {
+                "name": "X-ENVELOPE-RESPONSE",
+                "in": "header",
+                "description": "With this parameter, we can ENVELOPE the response message in a specific key.",
+                "required": false,
+                "style": "simple",
+                "allowEmptyValue": false,
+                "schema": {
+                    "type": "string",
+                    "default": "data"
+                }
+            },
+            "JsonContentType": {
+                "name": "Content-Type",
+                "in": "header",
+                "description": "Setting the Content-Type to Json",
+                "required": true,
+                "style": "simple",
+                "allowEmptyValue": false,
+                "schema": {
+                    "type": "string",
+                    "default": "application\/json"
+                }
+            },
             "PageNumberParam": {
                 "name": "pageNumber",
                 "in": "query",
@@ -598,6 +732,48 @@
                     "type": "integer",
                     "format": "int32",
                     "default": 25
+                }
+            },
+            "ResponseType": {
+                "name": "X-RESPONSE-TYPE",
+                "in": "header",
+                "description": "With this parameter, we can handle the response message, according to our requirement.",
+                "required": false,
+                "style": "simple",
+                "allowEmptyValue": false,
+                "schema": {
+                    "type": "string",
+                    "enum": [
+                        "EXAMPLE",
+                        "EXAMPLE_AND_OVERWRITE",
+                        "SCHEMA",
+                        "BODY",
+                        "ALL"
+                    ],
+                    "default": "ALL"
+                }
+            },
+            "StatusCode": {
+                "name": "X-STATUS-CODE",
+                "in": "header",
+                "description": "With this parameter, we can handle the response message, according to the status code which we want.",
+                "required": false,
+                "style": "simple",
+                "allowEmptyValue": false,
+                "schema": {
+                    "type": "integer",
+                    "default": 200,
+                    "enum": [
+                        200,
+                        201,
+                        204,
+                        400,
+                        401,
+                        404,
+                        409,
+                        500,
+                        503
+                    ]
                 }
             }
         },
