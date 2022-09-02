@@ -20,6 +20,13 @@ follow below steps to run a Mock Server on your local.
 3. Now you can [open it on your browser](http://localhost:8085) and then use [Insomnia](https://insomnia.rest/)
    or [Postman](https://www.postman.com/downloads/)
 
+# Install and pull the API documentation
+1. download [Insomnia Tool](https://insomnia.rest/download)
+2. Clone this repository 
+3. Now, you can test all the Petstores endpoints after running the docker on your local
+
+![alt text](https://github.com/weprodev/Fox.Mockery/blob/master/public/petstore-open-api-specification-Fox-Mockery.png)
+
 # Configuration
 
 Fox Mockery has three config files:
