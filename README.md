@@ -17,6 +17,12 @@ follow below steps to run a Mock Server on your local.
 
 1. Clone the repository
 2. Run this command on the Fox Mockery directory `make install`
+   > If the make command is not working for you run these commands
+   1. `cp .env.example .env`
+   2. `composer install`
+   3. `cd Fox-Mockery-Servers && docker-compose up -d --force-recreate && docker-compose build --force-rm`
+   
+
 3. Now you can [open it on your browser](http://localhost:8085) and then use [Insomnia](https://insomnia.rest/)
    or [Postman](https://www.postman.com/downloads/)
 
@@ -44,13 +50,13 @@ Open API Specification files will generate according to the json files in the mo
 
 ```bash
 // generate Open API Specification for all service
-make openapi
+make openapi   OR   php artisan fox:openapi
 
 // generate Open API Specification for a specific service
-make openapi {SERVICE_NAME}
+make openapi {SERVICE_NAME}   OR   php artisan fox:openapi {SERVICE_NAME}
 
 // Example 
-make openapi petstore
+make openapi petstore   OR   php artisan fox:openapi petstore
  
  // OUTPUT
  AFTER RUNNING THIS COMMAND index.oas.json, index.oas.yml and route.json FILES WILL CREATE IN THE SERVICE DIRECTORY!'
