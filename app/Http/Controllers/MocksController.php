@@ -4,9 +4,15 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\GetServiceRouteException;
+use App\Exceptions\ReferencePathException;
 use App\Exceptions\ServiceIsNotValidException;
+use App\Exceptions\ValidationException;
 use App\Services\MockData\MockDataBuilder;
 use App\Services\MockData\MockDataFactory;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -22,7 +28,6 @@ final class MocksController extends Controller
 
     /**
      * @throws ServiceIsNotValidException
-     * @throws \App\Exceptions\GetServiceRouteException
      */
     public function __construct()
     {
@@ -39,14 +44,14 @@ final class MocksController extends Controller
     }
 
     /**
-     * @throws \App\Exceptions\GetServiceRouteException
-     * @throws \App\Exceptions\ReferencePathException
-     * @throws \App\Exceptions\ValidationException
+     * @throws GetServiceRouteException
+     * @throws ReferencePathException
+     * @throws ValidationException
      */
     public function index(): JsonResponse
     {
         MocksHelper::submitDataValidation();
-
+        
         $mockDataBuilder = new MockDataBuilder;
         $mockDataBuilder = $mockDataBuilder
             ->withPathContent()
@@ -61,16 +66,16 @@ final class MocksController extends Controller
     }
 
     /**
-     * @throws \App\Exceptions\ReferencePathException
-     * @throws \App\Exceptions\ValidationException
-     * @throws \App\Exceptions\GetServiceRouteException
+     * @throws ReferencePathException
+     * @throws ValidationException
+     * @throws GetServiceRouteException
      */
     public function indexWithArguments(...$arguments): JsonResponse
     {
         return $this->index();
     }
 
-    public function serviceDocumentation(Request $request, string $service_name)
+    public function serviceDocumentation(Request $request, string $service_name): View|Factory|JsonResponse|Application
     {
         $docs = MocksHelper::getServiceContent($service_name);
 

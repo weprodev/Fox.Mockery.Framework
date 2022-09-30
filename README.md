@@ -20,10 +20,10 @@ follow below steps to run a Mock Server on your local.
    > If the make command is not working for you run these commands
    1. `cp .env.example .env`
    2. `composer install`
-   3. `cd Fox-Mockery-Servers && docker-compose up -d --force-recreate && docker-compose build --force-rm`
+   3. `php artisan serve`
    
 
-3. Now you can [open it on your browser](http://localhost:8085) and then use [Insomnia](https://insomnia.rest/)
+3. Now you can [open it on your browser](http://localhost:8000) and then use [Insomnia](https://insomnia.rest/)
    or [Postman](https://www.postman.com/downloads/)
 
 # Install and pull the API documentation

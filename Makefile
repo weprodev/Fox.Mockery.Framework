@@ -46,7 +46,8 @@ help:
 install:
 	cp .env.example .env
 	composer install
-	cd Fox-Mockery-Servers && docker-compose up -d --force-recreate && docker-compose build --force-rm
+	php artisan serve
+# 	cd Fox-Mockery-Servers && docker-compose up -d --force-recreate && docker-compose build --force-rm
 	exit 0
 
 ## Run the docker servers
