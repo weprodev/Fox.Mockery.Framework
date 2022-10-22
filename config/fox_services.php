@@ -12,5 +12,10 @@ return [
         'active' => true,
         'version' => '1.0.0',
     ],
+    'user' => [
+        'port' => '9192',
+        'active' => true,
+        'version' => '1.0.0',
+    ],
 
 ];

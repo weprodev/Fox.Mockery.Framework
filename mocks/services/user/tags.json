@@ -1,0 +1,11 @@
+[
+	{
+		"name": "User",
+		"description": "Each user who have registered on the platform"
+	},
+	{
+		"name": "Auth",
+		"description": "Authentication"
+	}
+]
+

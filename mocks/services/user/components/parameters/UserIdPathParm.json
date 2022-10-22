@@ -1,0 +1,11 @@
+{
+	"name": "userId",
+	"in": "path",
+	"description": "User Id",
+	"required": true,
+	"style": "simple",
+	"explode": false,
+	"schema": {
+		"type": "string"
+	}
+}

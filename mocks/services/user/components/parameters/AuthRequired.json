@@ -1,0 +1,11 @@
+{
+	"name": "Authorization",
+	"in": "header",
+	"description": "Authentication required",
+	"required": true,
+	"style": "simple",
+	"allowEmptyValue": false,
+	"schema": {
+		"type": "string"
+	}
+}

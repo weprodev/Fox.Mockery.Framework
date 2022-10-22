@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "required": [
+    "username",
+    "password"
+  ],
+  "properties": {
+    "username": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 100,
+      "format": "email",
+      "example": "John.Doeh@example.com"
+    },
+    "password": {
+      "type": "string",
+      "format": "password",
+      "minLength": 8,
+      "maxLength": 100,
+      "example": "@#ThisIsStrong22Password!"
+    }
+  }
+}
+

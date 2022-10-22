@@ -1,0 +1,511 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "User Module",
+        "description": "OPEN API SPECIFICATION for User Module",
+        "termsOfService": "https:\/\/weprodev.com",
+        "contact": {
+            "name": "Michale Andish",
+            "url": "https:\/\/mekaeil.me"
+        },
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "http:\/\/fox-mockery.local",
+            "description": "Fox-Mockery"
+        }
+    ],
+    "paths": {
+        "\/user\/v1\/auth\/sign-in": {
+            "post": {
+                "summary": "Sign In",
+                "description": "Sign In",
+                "tags": [
+                    "Auth"
+                ],
+                "security": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application\/json": {
+                            "schema": {
+                                "$ref": "#\/components\/schemas\/SignIn"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "you have logged in to your account successfully!",
+                        "content": {
+                            "application\/json": {
+                                "example": {
+                                    "data": {
+                                        "user": {
+                                            "first_name": "John",
+                                            "Last_name": "Doeh",
+                                            "email": "john.doeh@example.com",
+                                            "username": "john.doeh",
+                                            "gender": "male",
+                                            "status": "active",
+                                            "last_login": "2022-09-10 12:30:45",
+                                            "default_language": "EN",
+                                            "phone_number": "+135632123123",
+                                            "email_verified_at": "2022-07-14 12:23:45",
+                                            "phone_number_verified_at": "2022-08-14 12:23:45"
+                                        },
+                                        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+                                        "token_type": "Bearer",
+                                        "expires_in": 86400,
+                                        "refresh_token": "ofisjdjguejJIUzI1NiIsInR5cCI6IkpXVCJ9.pliewjGdGOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden!"
+                    },
+                    "401": {
+                        "description": "Something went wrong!",
+                        "content": {
+                            "application\/json": {
+                                "example": {
+                                    "data": {
+                                        "message": "Validation Error! make sure your data are valid!",
+                                        "error": [
+                                            "Username is required!",
+                                            "Password must be more than 8 characters!"
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "\/user\/v1\/auth\/sign-up": {
+            "post": {
+                "summary": "Sign Up",
+                "description": "Sign Up",
+                "tags": [
+                    "Auth"
+                ],
+                "security": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application\/json": {
+                            "schema": {
+                                "$ref": "#\/components\/schemas\/SignUp"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Congratulations, you have successfully registered! verify your phone number!",
+                        "content": {
+                            "application\/json": {
+                                "example": {
+                                    "data": {
+                                        "user": {
+                                            "first_name": "John",
+                                            "Last_name": "Doeh",
+                                            "email": "john.doeh@example.com",
+                                            "username": "john.doeh",
+                                            "gender": "male",
+                                            "status": "pending",
+                                            "last_login": "2022-09-10 12:30:45",
+                                            "phone_number": "+135632123123",
+                                            "email_verified_at": null,
+                                            "phone_number_verified_at": null,
+                                            "default_language": "EN"
+                                        },
+                                        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+                                        "token_type": "Bearer",
+                                        "expires_in": 86400,
+                                        "refresh_token": "ofisjdjguejJIUzI1NiIsInR5cCI6IkpXVCJ9.pliewjGdGOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden!"
+                    },
+                    "401": {
+                        "description": "Something went wrong!",
+                        "content": {
+                            "application\/json": {
+                                "example": {
+                                    "data": {
+                                        "message": "Validation Error! make sure your data are valid!",
+                                        "error": [
+                                            "first name, and last name are required!",
+                                            "Password must be more than 8 characters!",
+                                            "You must add a valid phone number!"
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "\/user\/v1\/auth\/phone-number-verification": {
+            "post": {
+                "summary": "Phone Number Verification",
+                "description": "After registration, user must verify the phone number\/ email address!",
+                "tags": [
+                    "Auth"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#\/components\/parameters\/JsonContentType"
+                    },
+                    {
+                        "$ref": "#\/components\/parameters\/AuthRequired"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application\/json": {
+                            "schema": {
+                                "$ref": "#\/components\/schemas\/PhoneNumberVerification"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Your phone number has been verified successfully!",
+                        "content": {
+                            "application\/json": {
+                                "example": {
+                                    "data": {
+                                        "user": {
+                                            "first_name": "John",
+                                            "Last_name": "Doeh",
+                                            "email": "john.doeh@example.com",
+                                            "gender": "male",
+                                            "status": "active",
+                                            "last_login": "2022-09-10 12:30:45",
+                                            "phone_number": "+135632123123",
+                                            "email_verified_at": null,
+                                            "phone_number_verified_at": "2022-09-10 12:30:45",
+                                            "default_language": "EN"
+                                        },
+                                        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+                                        "token_type": "Bearer",
+                                        "expires_in": 86400,
+                                        "refresh_token": "ofisjdjguejJIUzI1NiIsInR5cCI6IkpXVCJ9.pliewjGdGOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Something went wrong!",
+                        "content": {
+                            "application\/json": {
+                                "example": {
+                                    "data": {
+                                        "message": "Validation Error! make sure your data are valid!",
+                                        "error": [
+                                            "Security code is not match with the phone number!"
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "parameters": {
+            "AuthRequired": {
+                "name": "Authorization",
+                "in": "header",
+                "description": "Authentication required",
+                "required": true,
+                "style": "simple",
+                "allowEmptyValue": false,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EnvelopeResponse": {
+                "name": "X-ENVELOPE-RESPONSE",
+                "in": "header",
+                "description": "With this parameter, we can ENVELOPE the response message in a specific key.",
+                "required": false,
+                "style": "simple",
+                "allowEmptyValue": false,
+                "schema": {
+                    "type": "string",
+                    "default": "data"
+                }
+            },
+            "JsonContentType": {
+                "name": "Content-Type",
+                "in": "header",
+                "description": "Setting the Content-Type to Json",
+                "required": true,
+                "style": "simple",
+                "allowEmptyValue": false,
+                "schema": {
+                    "type": "string",
+                    "default": "application\/json"
+                }
+            },
+            "ResponseType": {
+                "name": "X-RESPONSE-TYPE",
+                "in": "header",
+                "description": "With this parameter, we can handle the response message, according to our requirement.",
+                "required": false,
+                "style": "simple",
+                "allowEmptyValue": false,
+                "schema": {
+                    "type": "string",
+                    "enum": [
+                        "EXAMPLE",
+                        "EXAMPLE_AND_OVERWRITE",
+                        "SCHEMA",
+                        "BODY",
+                        "ALL"
+                    ],
+                    "default": "ALL"
+                }
+            },
+            "StatusCode": {
+                "name": "X-STATUS-CODE",
+                "in": "header",
+                "description": "With this parameter, we can handle the response message, according to the status code which we want.",
+                "required": false,
+                "style": "simple",
+                "allowEmptyValue": false,
+                "schema": {
+                    "type": "integer",
+                    "default": 200,
+                    "enum": [
+                        200,
+                        201,
+                        204,
+                        400,
+                        401,
+                        403,
+                        404,
+                        409,
+                        500,
+                        503
+                    ]
+                }
+            },
+            "UserIdPathParm": {
+                "name": "userId",
+                "in": "path",
+                "description": "User Id",
+                "required": true,
+                "style": "simple",
+                "explode": false,
+                "schema": {
+                    "type": "string"
+                }
+            }
+        },
+        "schemas": {
+            "PhoneNumberVerification": {
+                "type": "object",
+                "required": [
+                    "security_code"
+                ],
+                "properties": {
+                    "security_code": {
+                        "type": "integer",
+                        "maxLength": 6,
+                        "minLength": 6,
+                        "example": 234587
+                    }
+                }
+            },
+            "SignIn": {
+                "type": "object",
+                "required": [
+                    "username",
+                    "password"
+                ],
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 100,
+                        "format": "email",
+                        "example": "John.Doeh@example.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "minLength": 8,
+                        "maxLength": 100,
+                        "example": "@#ThisIsStrong22Password!"
+                    }
+                }
+            },
+            "SignUp": {
+                "type": "object",
+                "required": [
+                    "first_name",
+                    "last_name",
+                    "phone_number",
+                    "email",
+                    "password",
+                    "gender",
+                    "default_language",
+                    "accept_policy"
+                ],
+                "properties": {
+                    "first_name": {
+                        "type": "string",
+                        "maxLength": 70,
+                        "minLength": 2,
+                        "example": "John"
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "maxLength": 70,
+                        "minLength": 2,
+                        "example": "Doeh"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 100,
+                        "example": "john.doeh@example.com"
+                    },
+                    "phone_number": {
+                        "type": "string",
+                        "example": "+3165432455"
+                    },
+                    "gender": {
+                        "type": "string",
+                        "example": "male",
+                        "enum": [
+                            "male",
+                            "female",
+                            "other",
+                            "unknown"
+                        ]
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "@#ThisIsStrong22Password!"
+                    },
+                    "default_language": {
+                        "type": "string",
+                        "maxLength": 2,
+                        "example": "EN"
+                    },
+                    "accept_policy": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
+            "User": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "firstName": {
+                        "type": "string",
+                        "maxLength": 100,
+                        "minLength": 2,
+                        "example": "John"
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "maxLength": 100,
+                        "minLength": 2,
+                        "example": "Thompson"
+                    },
+                    "gender": {
+                        "type": "string",
+                        "example": "male",
+                        "enum": [
+                            "male",
+                            "female",
+                            "other",
+                            "unknown"
+                        ]
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "ACCEPTED",
+                        "enum": [
+                            "ACCEPTED",
+                            "PENDING",
+                            "SUSPENDED",
+                            "BLOCKED"
+                        ]
+                    },
+                    "default_language": {
+                        "type": "string",
+                        "example": "EN"
+                    },
+                    "phone_number": {
+                        "type": "string",
+                        "example": "+3165432455"
+                    },
+                    "last_login": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-01-01T10:05:08"
+                    },
+                    "email_verified_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-01-01T10:05:08"
+                    },
+                    "phone_number_verified_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-01-01T10:05:08"
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "BearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "security": [
+        {
+            "bearerAuth": []
+        }
+    ],
+    "tags": [
+        {
+            "name": "User",
+            "description": "Each user who have registered on the platform"
+        },
+        {
+            "name": "Auth",
+            "description": "Authentication"
+        }
+    ]
+}

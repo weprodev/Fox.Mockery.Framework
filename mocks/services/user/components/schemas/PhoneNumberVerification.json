@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "required": [
+    "security_code"
+  ],
+  "properties": {
+    "security_code": {
+      "type": "integer",
+      "maxLength": 6,
+      "minLength": 6,
+      "example": 234587
+    }
+  }
+}
+

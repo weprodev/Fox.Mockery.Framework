@@ -1,0 +1,65 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "firstName": {
+      "type": "string",
+      "maxLength": 100,
+      "minLength": 2,
+      "example": "John"
+    },
+    "lastName": {
+      "type": "string",
+      "maxLength": 100,
+      "minLength": 2,
+      "example": "Thompson"
+    },
+    "gender": {
+      "type": "string",
+      "example": "male",
+      "enum": [
+        "male",
+        "female",
+        "other",
+        "unknown"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "example": "ACCEPTED",
+      "enum": [
+        "ACCEPTED",
+        "PENDING",
+        "SUSPENDED",
+        "BLOCKED"
+      ]
+    },
+    "default_language": {
+      "type": "string",
+      "example": "EN"
+    },
+    "phone_number": {
+      "type": "string",
+      "example": "+3165432455"
+    },
+    "last_login": {
+      "type": "string",
+      "format": "date-time",
+      "example": "2022-01-01T10:05:08"
+    },
+    "email_verified_at": {
+      "type": "string",
+      "format": "date-time",
+      "example": "2022-01-01T10:05:08"
+    },
+    "phone_number_verified_at": {
+      "type": "string",
+      "format": "date-time",
+      "example": "2022-01-01T10:05:08"
+    }
+  }
+}
